@@ -1,0 +1,39 @@
+﻿<Window x:Class="IconMaker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IconMaker"
+        xmlns:model="clr-namespace:IconMaker.Model"
+        mc:Ignorable="d"
+        Title="Icon Maker"
+        Activated="MainWindow_OnActivated">
+    <Window.DataContext>
+        <model:MainModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StatusBar Grid.Row="3">
+            <StatusBarItem x:Name="LoadProgress" 
+                           Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Scanning icon library:"
+                           VerticalAlignment="Center"/>
+                    <ProgressBar x:Name="ProgressBar"
+                                 Height="16"
+                                 Width="256"
+                                 Minimum="0"
+                                 Maximum="1000"
+                                 Value="0" 
+                                 VerticalAlignment="Center"/>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem x:Name="Ready">Ready.</StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
