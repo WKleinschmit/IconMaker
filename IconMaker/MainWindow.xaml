@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IconMaker"
         xmlns:model="clr-namespace:IconMaker.Model"
+        xmlns:wpf="clr-namespace:IconMaker.wpf"
         mc:Ignorable="d"
         Title="Icon Maker"
         Activated="MainWindow_OnActivated">
+    <Window.Resources>
+        <wpf:TreeTemplateSelector x:Key="TTS" />
+    </Window.Resources>
     <Window.DataContext>
-        <model:MainModel/>
+        <model:MainModel />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -18,19 +22,45 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="0"
+                       Background="PowderBlue"
+                       LastChildFill="True">
+                <TextBlock DockPanel.Dock="Top"
+                           FontSize="16"
+                           Margin="4"
+                           Background="Transparent"
+                           Foreground="RoyalBlue">Icon Sets</TextBlock>
+                <TreeView ItemsSource="{Binding Libraries}"
+                          ItemTemplateSelector="{StaticResource TTS}">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem"
+                               BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                            <Setter Property="IsExpanded"
+                                    Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
+            </DockPanel>
+        </Grid>
         <StatusBar Grid.Row="3">
-            <StatusBarItem x:Name="LoadProgress" 
+            <StatusBarItem x:Name="LoadProgress"
                            Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Scanning icon library:"
-                           VerticalAlignment="Center"/>
+                           VerticalAlignment="Center" />
                     <ProgressBar x:Name="ProgressBar"
                                  Height="16"
                                  Width="256"
                                  Minimum="0"
                                  Maximum="1000"
-                                 Value="0" 
-                                 VerticalAlignment="Center"/>
+                                 Value="0"
+                                 VerticalAlignment="Center" />
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem x:Name="Ready">Ready.</StatusBarItem>

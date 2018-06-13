@@ -70,14 +70,14 @@ namespace IconMaker
             if (!(obj is string xamlFileName) || !File.Exists(xamlFileName))
                 return;
 
-            string relativeFileName = xamlFileName.Substring(App.IconLibPath.Length + 7);
+            string relativeFileName = xamlFileName.Substring(App.IconLibPath.Length + 1);
 
             XmlDocument xaml = new XmlDocument();
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(xaml.NameTable);
             nsmgr.AddNamespace("p", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
             xaml.Load(xamlFileName);
 
-            if (!(xaml.SelectSingleNode("//p:Canvas[@Uid = 'Icon']", nsmgr) is XmlElement iconCanvas))
+            if (xaml.SelectSingleNode("//p:Canvas[@Uid = 'Icon']", nsmgr) == null)
             {
                 if (!FixIconXaml(xaml, nsmgr))
                     return;
@@ -96,16 +96,19 @@ namespace IconMaker
             Viewbox viewbox;
             using (MemoryStream ms = new MemoryStream())
             {
-                using (XmlWriter xmlWriter = XmlWriter.Create(ms, new XmlWriterSettings{CloseOutput = false}))
+                using (XmlWriter xmlWriter = XmlWriter.Create(ms, new XmlWriterSettings { CloseOutput = false }))
                     xaml.WriteTo(xmlWriter);
                 ms.Seek(0, SeekOrigin.Begin);
-                
+
                 viewbox = await App.DispatchFunc((s) => XamlReader.Load(s) as Viewbox, ms);
             }
             if (viewbox == null)
                 return;
 
-            _model.AddIcon(relativeFileName, viewbox);
+            if (xaml.SelectSingleNode("//p:Canvas[@Uid = 'Overlay']", nsmgr) != null)
+                await Task.Run(() => _model.AddOverlay(relativeFileName, viewbox));
+            else if (xaml.SelectSingleNode("//p:Canvas[@Uid = 'Icon']", nsmgr) != null)
+                await Task.Run(() => _model.AddIcon(relativeFileName, viewbox));
         }
 
         private bool FixIconXaml(XmlDocument xaml, XmlNamespaceManager nsmgr)

@@ -12,10 +12,11 @@ using System.Windows.Threading;
 
 namespace IconMaker
 {
+    /// <inheritdoc />
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         internal static string IconLibPath { get; }
 
@@ -26,35 +27,6 @@ namespace IconMaker
 
         public App()
         {
-            Stream iconsZipStream = GetType().Assembly.GetManifestResourceStream("IconMaker.Icons.zip");
-            if (iconsZipStream == null)
-                throw new ApplicationException();
-
-            ZipArchive iconsZip = new ZipArchive(iconsZipStream);
-            {
-                foreach (ZipArchiveEntry entry in iconsZip.Entries)
-                {
-                    string fullName = Path.Combine(IconLibPath, entry.FullName);
-                    if (entry.Length == 0)
-                        Directory.CreateDirectory(fullName);
-                    else
-                    {
-                        byte[] buffer = new byte[40960];
-                        using (FileStream fileStream = File.Open(fullName, FileMode.Create))
-                        {
-                            using (Stream zipStream = entry.Open())
-                            {
-                                int count;
-                                do
-                                {
-                                    count = zipStream.Read(buffer, 0, buffer.Length);
-                                    fileStream.Write(buffer, 0, count);
-                                } while (count > 0);
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         internal static async Task DispatchAction(Action action)
