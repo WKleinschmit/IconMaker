@@ -11,6 +11,26 @@
         Activated="MainWindow_OnActivated">
     <Window.Resources>
         <wpf:TreeTemplateSelector x:Key="TTS" />
+        <wpf:BooleanToVisibilityConverter x:Key="B2V" />
+        <HierarchicalDataTemplate x:Key="{x:Type model:IconLibrary}"
+                                  DataType="model:IconLibrary"
+                                  ItemsSource="{Binding Categories}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="img/library@14px.png"
+                       Stretch="None"
+                       Margin="0 0 3 0" />
+                <TextBlock Text="{Binding Name}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="{x:Type model:Category}"
+                                  DataType="model:Category">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="img/package@14px.png"
+                       Stretch="None"
+                       Margin="0 0 3 0" />
+                <TextBlock Text="{Binding Name}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
     </Window.Resources>
     <Window.DataContext>
         <model:MainModel />
@@ -22,7 +42,8 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1"
+              Margin="0,0,0,3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="5*" />
@@ -30,14 +51,18 @@
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0"
                        Background="PowderBlue"
-                       LastChildFill="True">
+                       LastChildFill="True"
+                       Margin="0,0,3,0">
                 <TextBlock DockPanel.Dock="Top"
                            FontSize="16"
                            Margin="4"
                            Background="Transparent"
                            Foreground="RoyalBlue">Icon Sets</TextBlock>
                 <TreeView ItemsSource="{Binding Libraries}"
-                          ItemTemplateSelector="{StaticResource TTS}">
+                          ItemTemplateSelector="{StaticResource TTS}"
+                          x:Name="LibraryTree"
+                          BorderThickness="0"
+                          SelectedItemChanged="LibraryTree_OnSelectedItemChanged">
                     <TreeView.ItemContainerStyle>
                         <Style TargetType="TreeViewItem"
                                BasedOn="{StaticResource {x:Type TreeViewItem}}">
@@ -47,7 +72,145 @@
                     </TreeView.ItemContainerStyle>
                 </TreeView>
             </DockPanel>
+            <GridSplitter Grid.Column="0"
+                          Background="PowderBlue"
+                          Width="3"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Stretch" />
+            <DockPanel Grid.Column="1"
+                       Background="PowderBlue"
+                       LastChildFill="True"
+                       Margin="0,0,3,0">
+                <StackPanel DockPanel.Dock="Top"
+                            Orientation="Horizontal">
+                    <TextBlock FontSize="16"
+                               Margin="4 4 0 4"
+                               Background="Transparent"
+                               Foreground="RoyalBlue"
+                               Text="{Binding Library.Name, Mode=OneWay}">
+                    </TextBlock>
+                    <TextBlock FontSize="16"
+                               Margin="0 4 4 4"
+                               Background="Transparent"
+                               Foreground="RoyalBlue"
+                               Visibility="{Binding HasCategory, Converter={StaticResource B2V}}"
+                               wpf:TextBlockExtension.RemoveEmptyRuns="True"
+                               wpf:TextBlockExtension.PreserveSpace="False">
+                        <Run Text=" - " />
+                        <Run Text="{Binding Category.Name, Mode=OneWay}" />
+                        <Run Text=" (" />
+                        <Run Text="{Binding Category.Icons.Count, Mode=OneWay}" />
+                        <Run Text=")" />
+                    </TextBlock>
+                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5*" />
+                        <RowDefinition Height="2*" />
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="0"
+                                  Margin="0 0 0 3">
+                        <ItemsControl Grid.Row="0"
+                                      ItemsSource="{Binding Category.Icons}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Background="{x:Static SystemColors.WindowBrush}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="model:Icon">
+                                    <Border Background="AliceBlue"
+                                            CornerRadius="8"
+                                            Width="120"
+                                            Height="100"
+                                            Margin="4"
+                                            MouseLeftButtonDown="Icon_Click">
+                                        <DockPanel HorizontalAlignment="Center"
+                                                   IsHitTestVisible="False"
+                                                   LastChildFill="True">
+                                            <ContentControl Height="48"
+                                                            Width="48"
+                                                            Margin="8 8 8 0"
+                                                            DockPanel.Dock="Top"
+                                                            Content="{Binding Viewbox}" />
+                                            <TextBlock Text="{Binding Title}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="4"
+                                                       HorizontalAlignment="Center"
+                                                       TextAlignment="Center" />
+                                        </DockPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <GridSplitter Grid.Row="0"
+                                  Background="PowderBlue"
+                                  Height="3"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Bottom" />
+                    <DockPanel  Grid.Row="1"
+                                LastChildFill="True">
+                        <TextBlock DockPanel.Dock="Top"
+                                   FontSize="16"
+                                   Margin="4"
+                                   Background="Transparent"
+                                   Foreground="RoyalBlue"
+                                   Visibility="{Binding HasLibrary, Converter={StaticResource B2V}, ConverterParameter=Visible;Hidden}"
+                                   wpf:TextBlockExtension.RemoveEmptyRuns="True"
+                                   wpf:TextBlockExtension.PreserveSpace="False">
+                            <Run>Overlays (</Run>
+                            <Run Text="{Binding Library.Overlays.Count, Mode=OneWay}" />
+                            <Run>)</Run>
+                        </TextBlock>
+                        <ScrollViewer>
+                            <ItemsControl ItemsSource="{Binding Library.Overlays}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Background="{x:Static SystemColors.WindowBrush}" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="model:IconOverlay">
+                                        <Border Background="AliceBlue"
+                                                CornerRadius="6"
+                                                Width="90"
+                                                Height="75"
+                                                Margin="3"
+                                                MouseLeftButtonDown="Icon_Click">
+                                            <DockPanel HorizontalAlignment="Center"
+                                                       IsHitTestVisible="False"
+                                                       LastChildFill="True">
+                                                <ContentControl Height="36"
+                                                                Width="36"
+                                                                Margin="8 8 8 0"
+                                                                DockPanel.Dock="Top"
+                                                                Content="{Binding Viewbox}" />
+                                                <TextBlock Text="{Binding Title}"
+                                                           TextWrapping="Wrap"
+                                                           Margin="3"
+                                                           HorizontalAlignment="Center"
+                                                           TextAlignment="Center" />
+                                            </DockPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Grid>
+            </DockPanel>
+            <GridSplitter Grid.Column="1"
+                          Background="PowderBlue"
+                          Width="3"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Stretch" />
         </Grid>
+        <GridSplitter Grid.Row="1"
+                      Background="PowderBlue"
+                      Height="3"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Bottom" />
         <StatusBar Grid.Row="3">
             <StatusBarItem x:Name="LoadProgress"
                            Visibility="Collapsed">

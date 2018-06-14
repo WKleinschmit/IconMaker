@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using IconMaker.Annotations;
+using PropertyChanged;
 
 namespace IconMaker.Model
 {
@@ -56,11 +57,19 @@ namespace IconMaker.Model
             string categoryName = parts[1];
             Category category = library.FindCategory(categoryName);
 
-            string iconName = new string(parts[1].TakeWhile(c => c != '.').ToArray());
+            string iconName = new string(parts[2].TakeWhile(c => c != '.').ToArray());
             category.FindIcon(iconName, viewbox);
         }
 
         public ObservableCollection<IconLibrary> Libraries { get; } = new ObservableCollection<IconLibrary>();
+
+        [AlsoNotifyFor(nameof(HasCategory))]
+        public Category Category { get; set; }
+        public bool HasCategory => Category != null;
+
+        [AlsoNotifyFor(nameof(HasLibrary))]
+        public IconLibrary Library { get; set; }
+        public bool HasLibrary => Library != null;
 
         private IconLibrary FindLibrary(string libraryName)
         {

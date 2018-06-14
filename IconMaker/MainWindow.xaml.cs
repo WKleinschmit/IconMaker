@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
 using IconMaker.Model;
+using IconMaker.wpf;
 
 namespace IconMaker
 {
@@ -35,22 +38,37 @@ namespace IconMaker
             if (isInitialized)
                 return;
 
-            Ready.Visibility = Visibility.Collapsed;
-            LoadProgress.Visibility = Visibility.Visible;
-            int numIcons = await CountIcons(App.IconLibPath);
-            ProgressBar.Maximum = numIcons;
-            ProgressBar.Value = 0;
-            try
+            BackgroundWorker bw = new BackgroundWorker
             {
-                await ScanIcons(App.IconLibPath);
-            }
-            finally
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false,
+            };
+            bw.DoWork += async (o, args) =>
             {
-                Ready.Visibility = Visibility.Visible;
-                LoadProgress.Visibility = Visibility.Collapsed;
-            }
+                int numIcons = await CountIcons(App.IconLibPath);
 
-            isInitialized = true;
+                await App.DispatchAction(() => {
+                    Ready.Visibility = Visibility.Collapsed;
+                    LoadProgress.Visibility = Visibility.Visible;
+                    ProgressBar.Maximum = numIcons;
+                    ProgressBar.Value = 0;
+                });
+
+                await ScanIcons(App.IconLibPath);
+
+                await App.DispatchAction(() =>
+                {
+                    Ready.Visibility = Visibility.Visible;
+                    LoadProgress.Visibility = Visibility.Collapsed;
+                    isInitialized = true;
+                });
+            };
+
+            bw.RunWorkerCompleted += (o, args) => { ((BackgroundWorker) o).Dispose(); };
+
+
+            bw.RunWorkerAsync();
+
         }
 
         private async Task ScanIcons(string path)
@@ -154,6 +172,32 @@ namespace IconMaker
             numIcons += Directory.GetFiles(path, "*.xaml").Length;
 
             return Task.FromResult(numIcons);
+        }
+
+        private void LibraryTree_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (!(DataContext is MainModel model))
+                return;
+
+            if (e.NewValue is Category category)
+            {
+                model.Category = category;
+                model.Library = category.Library;
+            }
+
+            if (e.NewValue is IconLibrary library)
+            {
+                model.Category = null;
+                model.Library = library;
+            }
+        }
+
+        private void Icon_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement fe && fe.DataContext is Icon icon)
+            {
+
+            }
         }
     }
 }

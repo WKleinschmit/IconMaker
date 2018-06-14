@@ -12,6 +12,10 @@ namespace IconMaker.wpf
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
+            if (item != null && container is FrameworkElement fe)
+            {
+                return fe.TryFindResource(item.GetType()) as DataTemplate;
+            }
             return base.SelectTemplate(item, container);
         }
     }
