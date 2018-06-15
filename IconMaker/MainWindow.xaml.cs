@@ -33,7 +33,7 @@ namespace IconMaker
 
         private bool isInitialized;
 
-        private async void MainWindow_OnActivated(object sender, EventArgs e)
+        private void MainWindow_OnActivated(object sender, EventArgs e)
         {
             if (isInitialized)
                 return;
@@ -189,14 +189,6 @@ namespace IconMaker
             {
                 model.Category = null;
                 model.Library = library;
-            }
-        }
-
-        private void Icon_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is FrameworkElement fe && fe.DataContext is Icon icon)
-            {
-
             }
         }
     }

@@ -29,11 +29,13 @@ namespace IconMaker.Model
 
         public Viewbox Viewbox { get; private set; }
 
+        // ReSharper disable UnusedMember.Global
         public void OnTLChanged()
         {
             if (Viewbox == null && TL != null)
                 CreateViewbox(TL);
         }
+        // ReSharper restore UnusedMember.Global
 
         private async void CreateViewbox(Viewbox vb)
         {

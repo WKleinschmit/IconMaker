@@ -62,6 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="wpf\BooleanToBrushConverter.cs" />
     <Compile Include="wpf\BooleanToVisibilityConverter.cs" />
     <Compile Include="wpf\TextBlockExtension.cs" />
     <Compile Include="wpf\TreeTemplateSelector.cs" />

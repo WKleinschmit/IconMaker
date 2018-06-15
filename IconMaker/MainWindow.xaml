@@ -12,6 +12,7 @@
     <Window.Resources>
         <wpf:TreeTemplateSelector x:Key="TTS" />
         <wpf:BooleanToVisibilityConverter x:Key="B2V" />
+        <wpf:BooleanToBrushConverter x:Key="B2Brush" TrueValue="PowderBlue" FalseValue="AliceBlue"/>
         <HierarchicalDataTemplate x:Key="{x:Type model:IconLibrary}"
                                   DataType="model:IconLibrary"
                                   ItemsSource="{Binding Categories}">
@@ -110,21 +111,21 @@
                     </Grid.RowDefinitions>
                     <ScrollViewer Grid.Row="0"
                                   Margin="0 0 0 3">
-                        <ItemsControl Grid.Row="0"
-                                      ItemsSource="{Binding Category.Icons}">
-                            <ItemsControl.ItemsPanel>
+                        <ListBox ItemsSource="{Binding Category.Icons}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Background="{x:Static SystemColors.WindowBrush}" />
+                                    <WrapPanel Background="{x:Static SystemColors.WindowBrush}"
+                                               IsItemsHost="True"
+                                               Orientation="Horizontal"/>
                                 </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
                                 <DataTemplate DataType="model:Icon">
-                                    <Border Background="AliceBlue"
-                                            CornerRadius="8"
+                                    <Border CornerRadius="8"
                                             Width="120"
                                             Height="100"
-                                            Margin="4"
-                                            MouseLeftButtonDown="Icon_Click">
+                                            Margin="4">
                                         <DockPanel HorizontalAlignment="Center"
                                                    IsHitTestVisible="False"
                                                    LastChildFill="True">
@@ -141,8 +142,8 @@
                                         </DockPanel>
                                     </Border>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </ScrollViewer>
                     <GridSplitter Grid.Row="0"
                                   Background="PowderBlue"
@@ -164,20 +165,21 @@
                             <Run>)</Run>
                         </TextBlock>
                         <ScrollViewer>
-                            <ItemsControl ItemsSource="{Binding Library.Overlays}">
-                                <ItemsControl.ItemsPanel>
+                            <ListBox ItemsSource="{Binding Library.Overlays}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Background="{x:Static SystemColors.WindowBrush}" />
+                                        <WrapPanel Background="{x:Static SystemColors.WindowBrush}" 
+                                                   IsItemsHost="True"
+                                                   Orientation="Horizontal"/>
                                     </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
                                     <DataTemplate DataType="model:IconOverlay">
-                                        <Border Background="AliceBlue"
-                                                CornerRadius="6"
+                                        <Border CornerRadius="6"
                                                 Width="90"
                                                 Height="75"
-                                                Margin="3"
-                                                MouseLeftButtonDown="Icon_Click">
+                                                Margin="3">
                                             <DockPanel HorizontalAlignment="Center"
                                                        IsHitTestVisible="False"
                                                        LastChildFill="True">
@@ -194,8 +196,8 @@
                                             </DockPanel>
                                         </Border>
                                     </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
