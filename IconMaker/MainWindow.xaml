@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:IconMaker"
         xmlns:model="clr-namespace:IconMaker.Model"
         xmlns:wpf="clr-namespace:IconMaker.wpf"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="Icon Maker"
         Activated="MainWindow_OnActivated">
@@ -33,7 +34,7 @@
         </HierarchicalDataTemplate>
     </Window.Resources>
     <Window.DataContext>
-        <model:MainModel />
+        <model:MainModel HasSelection="True"/>
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -47,7 +48,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0"
                        Background="PowderBlue"
@@ -109,40 +110,45 @@
                         <RowDefinition Height="2*" />
                     </Grid.RowDefinitions>
                     <ScrollViewer Grid.Row="0"
-                                  Margin="0 0 0 3">
-                        <ItemsControl Grid.Row="0"
-                                      ItemsSource="{Binding Category.Icons}">
-                            <ItemsControl.ItemsPanel>
+                                  Margin="0 0 0 3"
+                                  Background="{x:Static SystemColors.WindowBrush}">
+                        <ListBox x:Name="lbIcons"
+                                 ItemsSource="{Binding Category.Icons}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 PreviewKeyDown="LbIcons_OnPreviewKeyDown"
+                                 SelectionMode="Extended"
+                                 SelectionChanged="LbIcons_OnSelectionChanged">
+                            <i:Interaction.Behaviors>
+                                <wpf:IgnoreMouseWheelBehavior />
+                            </i:Interaction.Behaviors>
+                            <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Background="{x:Static SystemColors.WindowBrush}" />
+                                    <WrapPanel IsItemsHost="True"
+                                               Orientation="Horizontal" />
                                 </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
                                 <DataTemplate DataType="model:Icon">
-                                    <Border Background="AliceBlue"
-                                            CornerRadius="8"
-                                            Width="120"
-                                            Height="100"
-                                            Margin="4"
-                                            MouseLeftButtonDown="Icon_Click">
-                                        <DockPanel HorizontalAlignment="Center"
-                                                   IsHitTestVisible="False"
-                                                   LastChildFill="True">
-                                            <ContentControl Height="48"
-                                                            Width="48"
-                                                            Margin="8 8 8 0"
-                                                            DockPanel.Dock="Top"
-                                                            Content="{Binding Viewbox}" />
-                                            <TextBlock Text="{Binding Title}"
-                                                       TextWrapping="Wrap"
-                                                       Margin="4"
-                                                       HorizontalAlignment="Center"
-                                                       TextAlignment="Center" />
-                                        </DockPanel>
-                                    </Border>
+                                    <DockPanel HorizontalAlignment="Center"
+                                               IsHitTestVisible="False"
+                                               LastChildFill="True"
+                                               Width="94"
+                                               Height="114">
+                                        <ContentControl Height="48"
+                                                        Width="48"
+                                                        Margin="8"
+                                                        DockPanel.Dock="Top"
+                                                        Content="{Binding Viewbox}"
+                                                        HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding Title}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0 3"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center" />
+                                    </DockPanel>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </ScrollViewer>
                     <GridSplitter Grid.Row="0"
                                   Background="PowderBlue"
@@ -163,39 +169,44 @@
                             <Run Text="{Binding Library.Overlays.Count, Mode=OneWay}" />
                             <Run>)</Run>
                         </TextBlock>
-                        <ScrollViewer>
-                            <ItemsControl ItemsSource="{Binding Library.Overlays}">
-                                <ItemsControl.ItemsPanel>
+                        <ScrollViewer Background="{x:Static SystemColors.WindowBrush}">
+                            <ListBox x:Name="lbOverlays"
+                                     ItemsSource="{Binding Library.Overlays}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     PreviewKeyDown="LbOverlays_OnPreviewKeyDown"
+                                     SelectionMode="Extended"
+                                     SelectionChanged="LbOverlays_OnSelectionChanged">
+                                <i:Interaction.Behaviors>
+                                    <wpf:IgnoreMouseWheelBehavior />
+                                </i:Interaction.Behaviors>
+                                <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Background="{x:Static SystemColors.WindowBrush}" />
+                                        <WrapPanel IsItemsHost="True"
+                                                   Orientation="Horizontal" />
                                     </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
                                     <DataTemplate DataType="model:IconOverlay">
-                                        <Border Background="AliceBlue"
-                                                CornerRadius="6"
-                                                Width="90"
-                                                Height="75"
-                                                Margin="3"
-                                                MouseLeftButtonDown="Icon_Click">
-                                            <DockPanel HorizontalAlignment="Center"
-                                                       IsHitTestVisible="False"
-                                                       LastChildFill="True">
-                                                <ContentControl Height="36"
-                                                                Width="36"
-                                                                Margin="8 8 8 0"
-                                                                DockPanel.Dock="Top"
-                                                                Content="{Binding Viewbox}" />
-                                                <TextBlock Text="{Binding Title}"
-                                                           TextWrapping="Wrap"
-                                                           Margin="3"
-                                                           HorizontalAlignment="Center"
-                                                           TextAlignment="Center" />
-                                            </DockPanel>
-                                        </Border>
+                                        <DockPanel HorizontalAlignment="Center"
+                                                   IsHitTestVisible="False"
+                                                   LastChildFill="True"
+                                                   Width="69"
+                                                   Height="84">
+                                            <ContentControl Height="36"
+                                                            Width="36"
+                                                            Margin="8"
+                                                            DockPanel.Dock="Top"
+                                                            Content="{Binding Viewbox}"
+                                                            HorizontalAlignment="Center" />
+                                            <TextBlock Text="{Binding Title}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0 3"
+                                                       HorizontalAlignment="Center"
+                                                       TextAlignment="Center" />
+                                        </DockPanel>
                                     </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
@@ -205,6 +216,142 @@
                           Width="3"
                           HorizontalAlignment="Right"
                           VerticalAlignment="Stretch" />
+            <DockPanel Grid.Column="2"
+                       Background="PowderBlue"
+                       LastChildFill="True">
+                <StackPanel DockPanel.Dock="Top"
+                            Orientation="Horizontal">
+                    <TextBlock FontSize="16"
+                               Margin="4 4 0 4"
+                               Background="Transparent"
+                               Foreground="RoyalBlue"
+                               Text="Generated Icons">
+                    </TextBlock>
+                    <TextBlock FontSize="16"
+                               Margin="0 4 4 4"
+                               Background="Transparent"
+                               Foreground="RoyalBlue"
+                               Visibility="{Binding HasSelection, Converter={StaticResource B2V}}"
+                               wpf:TextBlockExtension.RemoveEmptyRuns="True"
+                               wpf:TextBlockExtension.PreserveSpace="False">
+                        <Run Text=" - " />
+                        <Run Text="{Binding SelectedCount, Mode=OneWay}" />
+                        <Run Text=" Icons" />
+                    </TextBlock>
+                </StackPanel>
+                <Grid>
+                    <Grid Visibility="{Binding HasSelection, Converter={StaticResource B2V}, ConverterParameter=Collapsed;Visible}"
+                          Background="{x:Static SystemColors.WindowBrush}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="3*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="1"
+                            HorizontalAlignment="Center">No icon selected</TextBlock>
+                    </Grid>
+                    <Grid Visibility="{Binding HasSelection, Converter={StaticResource B2V}, ConverterParameter=Visible;Collapsed}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <wpf:AspectRatioContentControl MinHeight="150"
+                                                       Padding="20">
+                            <Grid Background="DarkSeaGreen" />
+                        </wpf:AspectRatioContentControl>
+                        <StackPanel Grid.Row="1"
+                                    Margin="0 3"
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center"
+                                       Margin="3 3 9 3">Overlay Position:</TextBlock>
+                            <ToggleButton Margin="3"
+                                          Tag="TL"
+                                          Click="OnOverlayPositionClick">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Rectangle Fill="DodgerBlue"
+                                               Canvas.Left="1"
+                                               Canvas.Top="1"
+                                               Width="6"
+                                               Height="6" />
+                                    <Path Fill="DarkGray"
+                                          Data="M8,2L14,2L14,14L2,14L2,8L8,8z" />
+                                </Canvas>
+                            </ToggleButton>
+                            <ToggleButton Margin="3"
+                                          Tag="TL"
+                                          Click="OnOverlayPositionClick">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Rectangle Fill="DodgerBlue"
+                                               Canvas.Right="1"
+                                               Canvas.Top="1"
+                                               Width="6"
+                                               Height="6" />
+                                    <Path Fill="DarkGray"
+                                          Data="M2,2L8,2L8,8L14,8L14,14L2,14z" />
+                                </Canvas>
+                            </ToggleButton>
+                            <ToggleButton Margin="3"
+                                          Tag="TL"
+                                          Click="OnOverlayPositionClick">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Rectangle Fill="DodgerBlue"
+                                               Canvas.Left="1"
+                                               Canvas.Bottom="1"
+                                               Width="6"
+                                               Height="6" />
+                                    <Path Fill="DarkGray"
+                                          Data="M2,2L14,2L14,14L8,14L8,8L2,8z" />
+                                </Canvas>
+                            </ToggleButton>
+                            <ToggleButton Margin="3"
+                                          Tag="TL"
+                                          Click="OnOverlayPositionClick">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Rectangle Fill="DodgerBlue"
+                                               Canvas.Right="1"
+                                               Canvas.Bottom="1"
+                                               Width="6"
+                                               Height="6" />
+                                    <Path Fill="DarkGray"
+                                          Data="M2,14L8,14L8,8L14,8L14,2L2,2z" />
+                                </Canvas>
+                            </ToggleButton>
+                            <Button Margin="9 3 3 3"
+                                    Tag="TL"
+                                    Click="OnOverlayPositionClear">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Ellipse Stroke="Red"
+                                             StrokeThickness="2"
+                                             Canvas.Left="1"
+                                             Canvas.Top="1"
+                                             Width="14"
+                                             Height="14" />
+                                    <Path Stroke="Red"
+                                          StrokeThickness="2"
+                                          Data="M4,12L12,4" />
+                                </Canvas>
+                            </Button>
+                        </StackPanel>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="82*" />
+                                <ColumnDefinition Width="45*" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </DockPanel>
         </Grid>
         <GridSplitter Grid.Row="1"
                       Background="PowderBlue"

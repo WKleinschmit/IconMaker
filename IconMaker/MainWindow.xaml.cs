@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
@@ -47,7 +49,8 @@ namespace IconMaker
             {
                 int numIcons = await CountIcons(App.IconLibPath);
 
-                await App.DispatchAction(() => {
+                await App.DispatchAction(() =>
+                {
                     Ready.Visibility = Visibility.Collapsed;
                     LoadProgress.Visibility = Visibility.Visible;
                     ProgressBar.Maximum = numIcons;
@@ -64,7 +67,7 @@ namespace IconMaker
                 });
             };
 
-            bw.RunWorkerCompleted += (o, args) => { ((BackgroundWorker) o).Dispose(); };
+            bw.RunWorkerCompleted += (o, args) => { ((BackgroundWorker)o).Dispose(); };
 
 
             bw.RunWorkerAsync();
@@ -198,6 +201,81 @@ namespace IconMaker
             {
 
             }
+        }
+
+        private void LbIcons_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (!(sender is ListBox lb) || e.Key < Key.A || e.Key > Key.Z)
+                return;
+
+
+            string searchLetter = e.Key.ToString();
+            ObservableCollection<Icon> Things = (ObservableCollection<Icon>)lb.ItemsSource;
+            ICollectionView cv = CollectionViewSource.GetDefaultView(Things);
+            Icon thingToFind;
+            if (lb.SelectedItem == null)
+            {
+                thingToFind = Things.FirstOrDefault(x => x.Title.StartsWith(searchLetter, StringComparison.InvariantCultureIgnoreCase));
+            }
+            else
+            {
+                int currentIndex = lb.Items.IndexOf((Icon)lb.SelectedItem);
+                List<Icon> laterItems = Things.Skip(currentIndex + 1).ToList();
+                thingToFind = laterItems.FirstOrDefault(x => x.Title.StartsWith(searchLetter, StringComparison.InvariantCultureIgnoreCase));
+            }
+            if (thingToFind == null)
+                return;
+            lb.ScrollIntoView(thingToFind);
+            cv.MoveCurrentTo(thingToFind);
+        }
+
+        private void LbOverlays_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (!(sender is ListBox lb) || e.Key < Key.A || e.Key > Key.Z)
+                return;
+
+            string searchLetter = e.Key.ToString();
+            ObservableCollection<IconOverlay> Things = (ObservableCollection<IconOverlay>)lb.ItemsSource;
+            ICollectionView cv = CollectionViewSource.GetDefaultView(Things);
+            IconOverlay thingToFind;
+            if (lb.SelectedItem == null)
+            {
+                thingToFind = Things.FirstOrDefault(x => x.Title.StartsWith(searchLetter, StringComparison.InvariantCultureIgnoreCase));
+            }
+            else
+            {
+                int currentIndex = lb.Items.IndexOf((IconOverlay)lb.SelectedItem);
+                List<IconOverlay> laterItems = Things.Skip(currentIndex + 1).ToList();
+                thingToFind = laterItems.FirstOrDefault(x => x.Title.StartsWith(searchLetter, StringComparison.InvariantCultureIgnoreCase));
+            }
+            if (thingToFind == null)
+                return;
+            lb.ScrollIntoView(thingToFind);
+            cv.MoveCurrentTo(thingToFind);
+        }
+
+        private void LbIcons_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(DataContext is MainModel model))
+                return;
+
+            model.SelectedIcons = lbIcons.SelectedItems.OfType<Icon>().ToArray();
+        }
+
+        private void LbOverlays_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(DataContext is MainModel model))
+                return;
+
+            model.SelectedOverlays = lbOverlays.SelectedItems.OfType<IconOverlay>().ToArray();
+        }
+
+        private void OnOverlayPositionClick(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnOverlayPositionClear(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

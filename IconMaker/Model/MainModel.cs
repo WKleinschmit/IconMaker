@@ -71,6 +71,39 @@ namespace IconMaker.Model
         public IconLibrary Library { get; set; }
         public bool HasLibrary => Library != null;
 
+        public Icon[] SelectedIcons { get; set; }
+
+        public void OnSelectedIconsChanged()
+        {
+            SelectionChanged();
+        }
+
+        public IconOverlay[] SelectedOverlays { get; set; }
+
+        public void OnSelectedOverlaysChanged()
+        {
+            SelectionChanged();
+        }
+
+        public void SelectionChanged()
+        {
+            Icon[] selectedIcons = SelectedIcons ?? new Icon[0];
+            int iconCount = selectedIcons.Length;
+
+            IconOverlay[] selectedOverlays = SelectedOverlays ?? new IconOverlay[0];
+            int overlayCount = selectedOverlays.Length;
+
+            HasSelection = selectedIcons.Length > 0;
+            SelectedCount = iconCount;
+            if (overlayCount > 0)
+                SelectedCount *= overlayCount;
+            SelectedIndex = 0;
+        }
+
+        public bool HasSelection { get; set; }
+        public int SelectedCount { get; set; }
+        public int SelectedIndex { get; set; }
+
         private IconLibrary FindLibrary(string libraryName)
         {
             IconLibrary library = Libraries.FirstOrDefault(l => l.Name.Equals(libraryName));
