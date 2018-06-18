@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Input;
 using IconMaker.Annotations;
 using PropertyChanged;
 
@@ -93,16 +94,34 @@ namespace IconMaker.Model
             IconOverlay[] selectedOverlays = SelectedOverlays ?? new IconOverlay[0];
             int overlayCount = selectedOverlays.Length;
 
-            HasSelection = selectedIcons.Length > 0;
+            HasIconSelection = selectedIcons.Length > 0;
+            HasOverlaySelection = overlayCount > 0;
             SelectedCount = iconCount;
-            if (overlayCount > 0)
+            if (HasOverlaySelection)
+            {
                 SelectedCount *= overlayCount;
+                if (OverlayPosition == OverlayPosition.None)
+                    OverlayPosition = OverlayPosition.BR;
+            }
+            else
+                OverlayPosition = OverlayPosition.None;
             SelectedIndex = 0;
         }
 
-        public bool HasSelection { get; set; }
+        [DoNotCheckEquality]
+        public bool HasIconSelection { get; set; }
+
+        [DoNotCheckEquality]
+        public bool HasOverlaySelection { get; set; }
+
+        [DoNotCheckEquality]
         public int SelectedCount { get; set; }
+
+        [DoNotCheckEquality]
         public int SelectedIndex { get; set; }
+
+        [DoNotCheckEquality]
+        public OverlayPosition OverlayPosition { get; set; }
 
         private IconLibrary FindLibrary(string libraryName)
         {

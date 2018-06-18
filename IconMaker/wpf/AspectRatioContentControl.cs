@@ -69,12 +69,6 @@ namespace IconMaker.wpf
                 UpdateLayout(RenderSize);
         }
 
-        protected override Size MeasureOverride(Size constraint)
-        {
-            Size sz = base.MeasureOverride(constraint);
-            return sz;
-        }
-
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);

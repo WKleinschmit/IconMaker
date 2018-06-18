@@ -67,9 +67,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\OverlayPosition.cs" />
     <Compile Include="wpf\AspectRatioContentControl.cs" />
+    <Compile Include="wpf\BooleanToBrushConverter.cs" />
     <Compile Include="wpf\BooleanToVisibilityConverter.cs" />
+    <Compile Include="wpf\ValueEqualsConverter.cs" />
     <Compile Include="wpf\IgnoreMouseWheelBehavior.cs" />
+    <Compile Include="wpf\NaturalIndexConverter.cs" />
     <Compile Include="wpf\TextBlockExtension.cs" />
     <Compile Include="wpf\TreeTemplateSelector.cs" />
     <Page Include="MainWindow.xaml">

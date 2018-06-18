@@ -7,21 +7,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
 using IconMaker.Model;
-using IconMaker.wpf;
 
 namespace IconMaker
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private MainModel _model;
+        private readonly MainModel _model;
 
         public MainWindow()
         {
@@ -30,12 +30,13 @@ namespace IconMaker
             if (!(DataContext is MainModel model))
                 throw new ApplicationException();
 
+            model.HasIconSelection = false;
             _model = model;
         }
 
         private bool isInitialized;
 
-        private async void MainWindow_OnActivated(object sender, EventArgs e)
+        private void MainWindow_OnActivated(object sender, EventArgs e)
         {
             if (isInitialized)
                 return;
@@ -179,19 +180,16 @@ namespace IconMaker
 
         private void LibraryTree_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (!(DataContext is MainModel model))
-                return;
-
             if (e.NewValue is Category category)
             {
-                model.Category = category;
-                model.Library = category.Library;
+                _model.Category = category;
+                _model.Library = category.Library;
             }
 
             if (e.NewValue is IconLibrary library)
             {
-                model.Category = null;
-                model.Library = library;
+                _model.Category = null;
+                _model.Library = library;
             }
         }
 
@@ -256,26 +254,28 @@ namespace IconMaker
 
         private void LbIcons_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(DataContext is MainModel model))
-                return;
-
-            model.SelectedIcons = lbIcons.SelectedItems.OfType<Icon>().ToArray();
+            _model.SelectedIcons = lbIcons.SelectedItems.OfType<Icon>().ToArray();
         }
 
         private void LbOverlays_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(DataContext is MainModel model))
-                return;
+            _model.SelectedOverlays = lbOverlays.SelectedItems.OfType<IconOverlay>().ToArray();
+        }
 
-            model.SelectedOverlays = lbOverlays.SelectedItems.OfType<IconOverlay>().ToArray();
+        private void OnPrevIcon(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void OnNextIcon(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         private void OnOverlayPositionClick(object sender, RoutedEventArgs e)
         {
-        }
-
-        private void OnOverlayPositionClear(object sender, RoutedEventArgs e)
-        {
+            if (sender is ToggleButton toggleButton && toggleButton.Tag is OverlayPosition overlayPosition)
+                _model.OverlayPosition = overlayPosition;
         }
     }
 }

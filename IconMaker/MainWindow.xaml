@@ -13,6 +13,8 @@
     <Window.Resources>
         <wpf:TreeTemplateSelector x:Key="TTS" />
         <wpf:BooleanToVisibilityConverter x:Key="B2V" />
+        <wpf:NaturalIndexConverter x:Key="NaturalIndex" />
+        <wpf:ValueEqualsConverter x:Key="Equals"/>
         <HierarchicalDataTemplate x:Key="{x:Type model:IconLibrary}"
                                   DataType="model:IconLibrary"
                                   ItemsSource="{Binding Categories}">
@@ -34,7 +36,7 @@
         </HierarchicalDataTemplate>
     </Window.Resources>
     <Window.DataContext>
-        <model:MainModel HasSelection="True"/>
+        <model:MainModel HasIconSelection="True" />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -231,7 +233,7 @@
                                Margin="0 4 4 4"
                                Background="Transparent"
                                Foreground="RoyalBlue"
-                               Visibility="{Binding HasSelection, Converter={StaticResource B2V}}"
+                               Visibility="{Binding HasIconSelection, Converter={StaticResource B2V}}"
                                wpf:TextBlockExtension.RemoveEmptyRuns="True"
                                wpf:TextBlockExtension.PreserveSpace="False">
                         <Run Text=" - " />
@@ -240,25 +242,24 @@
                     </TextBlock>
                 </StackPanel>
                 <Grid>
-                    <Grid Visibility="{Binding HasSelection, Converter={StaticResource B2V}, ConverterParameter=Collapsed;Visible}"
+                    <Grid Visibility="{Binding HasIconSelection, Converter={StaticResource B2V}, ConverterParameter=Collapsed;Visible}"
                           Background="{x:Static SystemColors.WindowBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="3*" />
                         </Grid.RowDefinitions>
-                        <TextBlock
-                            Grid.Row="1"
-                            HorizontalAlignment="Center">No icon selected</TextBlock>
+                        <TextBlock Grid.Row="1"
+                                   HorizontalAlignment="Center">No icon selected</TextBlock>
                     </Grid>
-                    <Grid Visibility="{Binding HasSelection, Converter={StaticResource B2V}, ConverterParameter=Visible;Collapsed}">
+                    <Grid Visibility="{Binding HasIconSelection, Converter={StaticResource B2V}, ConverterParameter=Visible;Collapsed}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <wpf:AspectRatioContentControl MinHeight="150"
-                                                       Padding="20">
+                                                       Padding="5 0">
                             <Grid Background="DarkSeaGreen" />
                         </wpf:AspectRatioContentControl>
                         <StackPanel Grid.Row="1"
@@ -268,8 +269,10 @@
                             <TextBlock VerticalAlignment="Center"
                                        Margin="3 3 9 3">Overlay Position:</TextBlock>
                             <ToggleButton Margin="3"
-                                          Tag="TL"
-                                          Click="OnOverlayPositionClick">
+                                          Tag="{x:Static model:OverlayPosition.TL}"
+                                          IsChecked="{Binding OverlayPosition, Converter={StaticResource Equals}, ConverterParameter={x:Static model:OverlayPosition.TL}, Mode=OneWay}"
+                                          Click="OnOverlayPositionClick"
+                                          IsEnabled="{Binding HasOverlaySelection}">
                                 <Canvas Width="16"
                                         Height="16">
                                     <Rectangle Fill="DodgerBlue"
@@ -282,8 +285,10 @@
                                 </Canvas>
                             </ToggleButton>
                             <ToggleButton Margin="3"
-                                          Tag="TL"
-                                          Click="OnOverlayPositionClick">
+                                          Tag="{x:Static model:OverlayPosition.TR}"
+                                          IsChecked="{Binding OverlayPosition, Converter={StaticResource Equals}, ConverterParameter={x:Static model:OverlayPosition.TR}, Mode=OneWay}"
+                                          Click="OnOverlayPositionClick"
+                                          IsEnabled="{Binding HasOverlaySelection}">
                                 <Canvas Width="16"
                                         Height="16">
                                     <Rectangle Fill="DodgerBlue"
@@ -296,8 +301,10 @@
                                 </Canvas>
                             </ToggleButton>
                             <ToggleButton Margin="3"
-                                          Tag="TL"
-                                          Click="OnOverlayPositionClick">
+                                          Tag="{x:Static model:OverlayPosition.BL}"
+                                          IsChecked="{Binding OverlayPosition, Converter={StaticResource Equals}, ConverterParameter={x:Static model:OverlayPosition.BL}, Mode=OneWay}"
+                                          Click="OnOverlayPositionClick"
+                                          IsEnabled="{Binding HasOverlaySelection}">
                                 <Canvas Width="16"
                                         Height="16">
                                     <Rectangle Fill="DodgerBlue"
@@ -310,8 +317,10 @@
                                 </Canvas>
                             </ToggleButton>
                             <ToggleButton Margin="3"
-                                          Tag="TL"
-                                          Click="OnOverlayPositionClick">
+                                          Tag="{x:Static model:OverlayPosition.BR}"
+                                          IsChecked="{Binding OverlayPosition, Converter={StaticResource Equals}, ConverterParameter={x:Static model:OverlayPosition.BR}, Mode=OneWay}"
+                                          Click="OnOverlayPositionClick"
+                                          IsEnabled="{Binding HasOverlaySelection}">
                                 <Canvas Width="16"
                                         Height="16">
                                     <Rectangle Fill="DodgerBlue"
@@ -323,9 +332,10 @@
                                           Data="M2,14L8,14L8,8L14,8L14,2L2,2z" />
                                 </Canvas>
                             </ToggleButton>
-                            <Button Margin="9 3 3 3"
-                                    Tag="TL"
-                                    Click="OnOverlayPositionClear">
+                            <ToggleButton Margin="9 3 3 3"
+                                          Tag="{x:Static model:OverlayPosition.None}"
+                                          IsChecked="{Binding OverlayPosition, Converter={StaticResource Equals}, ConverterParameter={x:Static model:OverlayPosition.None}, Mode=OneWay}"
+                                          Click="OnOverlayPositionClick">
                                 <Canvas Width="16"
                                         Height="16">
                                     <Ellipse Stroke="Red"
@@ -338,17 +348,60 @@
                                           StrokeThickness="2"
                                           Data="M4,12L12,4" />
                                 </Canvas>
+                            </ToggleButton>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2"
+                                    Margin="0 3"
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal">
+                            <Button Margin="3"
+                                    Click="OnPrevIcon">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Path Stroke="Black"
+                                          StrokeThickness="3"
+                                          StrokeLineJoin="Round"
+                                          StrokeEndLineCap="Round"
+                                          StrokeStartLineCap="Round"
+                                          Data="M8,1.5L1.5,8L8,14.5 M1.5,8L14.5,8" />
+                                </Canvas>
+                            </Button>
+                            <TextBlock VerticalAlignment="Center"
+                                       wpf:TextBlockExtension.RemoveEmptyRuns="True"
+                                       wpf:TextBlockExtension.PreserveSpace="False">
+                                <Run Text="Icon " />
+                                <Run Text="{Binding SelectedIndex, Converter={StaticResource NaturalIndex}}" />
+                                <Run Text=" of " />
+                                <Run Text="{Binding SelectedCount}" />
+                            </TextBlock>
+                            <Button Margin="3"
+                                    Click="OnNextIcon">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Path Stroke="Black"
+                                          StrokeThickness="3"
+                                          StrokeLineJoin="Round"
+                                          StrokeEndLineCap="Round"
+                                          StrokeStartLineCap="Round"
+                                          Data="M8,1.5L14.5,8L8,14.5 M1.5,8L14.5,8">
+                                    </Path>
+                                </Canvas>
+                            </Button>
+                            <Button Margin="9 3 3 3">
+                                <StackPanel Orientation="Horizontal">
+                                    <Canvas Width="16"
+                                            Height="16">
+                                        <Path Stroke="Black"
+                                              StrokeThickness="2"
+                                              StrokeLineJoin="Round"
+                                              StrokeEndLineCap="Round"
+                                              StrokeStartLineCap="Round"
+                                              Data="M1,12L1,15L15,15L15,12 M8,1L8,12 M14,6L8,12L2,6" />
+                                    </Canvas>
+                                    <TextBlock Margin="3 0">Add to collection</TextBlock>
+                                </StackPanel>
                             </Button>
                         </StackPanel>
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="82*" />
-                                <ColumnDefinition Width="45*" />
-                            </Grid.ColumnDefinitions>
-                        </Grid>
                     </Grid>
                 </Grid>
             </DockPanel>
