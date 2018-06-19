@@ -134,6 +134,11 @@
     <Resource Include="img\library%4014px.png" />
     <Resource Include="img\package%4014px.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\newCollection%4032px.png" />
+    <Resource Include="img\openCollection%4032px.png" />
+    <Resource Include="img\saveCollection%4032px.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.0.4\build\Fody.targets" Condition="Exists('..\packages\Fody.3.0.4\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

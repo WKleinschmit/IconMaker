@@ -27,6 +27,22 @@ namespace IconMaker.Model
         public Viewbox BL { get; internal set; }
         public Viewbox BR { get; internal set; }
 
+        public Viewbox this[OverlayPosition position]
+        {
+            get {
+                switch (position)
+                {
+                    case OverlayPosition.None: return null;
+                    case OverlayPosition.TL: return TL;
+                    case OverlayPosition.TR: return TR;
+                    case OverlayPosition.BL: return BL;
+                    case OverlayPosition.BR: return BR;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(position), position, null);
+                }
+            }
+        }
+
         public Viewbox Viewbox { get; private set; }
 
         // ReSharper disable UnusedMember.Global

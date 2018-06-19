@@ -14,7 +14,7 @@
         <wpf:TreeTemplateSelector x:Key="TTS" />
         <wpf:BooleanToVisibilityConverter x:Key="B2V" />
         <wpf:NaturalIndexConverter x:Key="NaturalIndex" />
-        <wpf:ValueEqualsConverter x:Key="Equals"/>
+        <wpf:ValueEqualsConverter x:Key="Equals" />
         <HierarchicalDataTemplate x:Key="{x:Type model:IconLibrary}"
                                   DataType="model:IconLibrary"
                                   ItemsSource="{Binding Categories}">
@@ -45,6 +45,25 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0"
+                   LastChildFill="True">
+            <Button DockPanel.Dock="Left"
+                    Margin="6">
+                <Image Source="img/newCollection@32px.png"
+                       Stretch="None" />
+            </Button>
+            <Button DockPanel.Dock="Left"
+                    Margin="6">
+                <Image Source="img/openCollection@32px.png"
+                       Stretch="None" />
+            </Button>
+            <Button DockPanel.Dock="Left"
+                    Margin="6">
+                <Image Source="img/saveCollection@32px.png"
+                       Stretch="None" />
+            </Button>
+            <Grid />
+        </DockPanel>
         <Grid Grid.Row="1"
               Margin="0,0,0,3">
             <Grid.ColumnDefinitions>
@@ -252,16 +271,16 @@
                         <TextBlock Grid.Row="1"
                                    HorizontalAlignment="Center">No icon selected</TextBlock>
                     </Grid>
-                    <Grid Visibility="{Binding HasIconSelection, Converter={StaticResource B2V}, ConverterParameter=Visible;Collapsed}">
+                    <Grid Visibility="{Binding HasIconSelection, Converter={StaticResource B2V}, ConverterParameter=Visible;Collapsed}"
+                          Background="White">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <wpf:AspectRatioContentControl MinHeight="150"
-                                                       Padding="5 0">
-                            <Grid Background="DarkSeaGreen" />
-                        </wpf:AspectRatioContentControl>
+                                                       Padding="5 0"
+                                                       Content="{Binding Preview}" />
                         <StackPanel Grid.Row="1"
                                     Margin="0 3"
                                     HorizontalAlignment="Center"

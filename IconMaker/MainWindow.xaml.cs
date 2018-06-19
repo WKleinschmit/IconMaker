@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
 using IconMaker.Model;
+using static System.Math;
 
 namespace IconMaker
 {
@@ -264,18 +265,25 @@ namespace IconMaker
 
         private void OnPrevIcon(object sender, RoutedEventArgs e)
         {
-            
+            _model.SelectedIndex = Max(0, _model.SelectedIndex - 1);
         }
 
         private void OnNextIcon(object sender, RoutedEventArgs e)
         {
-            
+            _model.SelectedIndex = Min(_model.SelectedCount - 1, _model.SelectedIndex + 1);
         }
 
         private void OnOverlayPositionClick(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleButton toggleButton && toggleButton.Tag is OverlayPosition overlayPosition)
+            {
+                _model.SuspendPreview();
+                if (overlayPosition == OverlayPosition.None)
+                    lbOverlays.SelectedItems.Clear();
+
                 _model.OverlayPosition = overlayPosition;
+                _model.ResumePreview();
+            }
         }
     }
 }

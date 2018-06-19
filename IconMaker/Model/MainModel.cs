@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Xml;
+using System.Xml.Linq;
 using IconMaker.Annotations;
 using PropertyChanged;
 
@@ -12,6 +16,9 @@ namespace IconMaker.Model
 {
     public class MainModel : INotifyPropertyChanged
     {
+        public static readonly XNamespace P = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+        public static readonly XNamespace X = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
+
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
         {
             string[] parts = relativeFileName.Split(@"\".ToCharArray(), 3, StringSplitOptions.RemoveEmptyEntries);
@@ -92,21 +99,29 @@ namespace IconMaker.Model
             int iconCount = selectedIcons.Length;
 
             IconOverlay[] selectedOverlays = SelectedOverlays ?? new IconOverlay[0];
-            int overlayCount = selectedOverlays.Length;
+            OverlayCount = selectedOverlays.Length;
 
             HasIconSelection = selectedIcons.Length > 0;
-            HasOverlaySelection = overlayCount > 0;
+            HasOverlaySelection = OverlayCount > 0;
             SelectedCount = iconCount;
+
+            SuspendPreview();
+
             if (HasOverlaySelection)
             {
-                SelectedCount *= overlayCount;
+                SelectedCount *= OverlayCount;
                 if (OverlayPosition == OverlayPosition.None)
                     OverlayPosition = OverlayPosition.BR;
             }
             else
                 OverlayPosition = OverlayPosition.None;
             SelectedIndex = 0;
+
+            ResumePreview();
         }
+
+        [DoNotCheckEquality]
+        public int OverlayCount { get; set; }
 
         [DoNotCheckEquality]
         public bool HasIconSelection { get; set; }
@@ -120,8 +135,96 @@ namespace IconMaker.Model
         [DoNotCheckEquality]
         public int SelectedIndex { get; set; }
 
+        public void OnSelectedIndexChanged()
+        {
+            UpdatePreview();
+        }
+
+        private int _suspendCount;
+        private bool _needsUpdate;
+        public void SuspendPreview()
+        {
+            ++_suspendCount;
+        }
+
+        public void ResumePreview()
+        {
+            if (--_suspendCount == 0 && _needsUpdate)
+                UpdatePreview();
+        }
+
+
+        private void UpdatePreview()
+        {
+            if (_suspendCount > 0)
+            {
+                _needsUpdate = true;
+                return;
+            }
+
+            _needsUpdate = false;
+
+            Preview.Children.Clear();
+            if (!HasIconSelection)
+                return;
+
+            Viewbox viewbox = CreateViewbox(SelectedIndex);
+            if (viewbox != null)
+                Preview.Children.Add(viewbox);
+        }
+
+        private Viewbox CreateViewbox(int index)
+        {
+            Viewbox viewbox;
+            if (HasOverlaySelection)
+            {
+                int overlayIndex = index % OverlayCount;
+                Viewbox overlay = SelectedOverlays[overlayIndex][OverlayPosition];
+
+                int iconIndex = index / OverlayCount;
+                Viewbox icon = SelectedIcons[iconIndex].Viewbox;
+
+                XDocument overlayXaml = XDocument.Parse(XamlWriter.Save(overlay));
+                XElement eltIconInOverlay = overlayXaml.Descendants(P + "Canvas").FirstOrDefault(e => e.Attribute(X + "Uid")?.Value == "Icon");
+
+                XDocument iconXaml = XDocument.Parse(XamlWriter.Save(icon));
+                XElement eltIconInIcon = iconXaml.Descendants(P + "Canvas").FirstOrDefault(e => e.Attribute(X + "Uid")?.Value == "Icon");
+
+                if (eltIconInOverlay != null && eltIconInIcon != null)
+                {
+                    foreach (XElement element in eltIconInIcon.Elements())
+                    {
+                        eltIconInOverlay.Add(element);
+                    }
+
+                    viewbox = (Viewbox)XamlReader.Load(overlayXaml.CreateReader());
+                }
+                else
+                    viewbox = null;
+            }
+            else
+            {
+                Icon icon = SelectedIcons[SelectedIndex];
+
+                string s = XamlWriter.Save(icon.Viewbox);
+                StringReader stringReader = new StringReader(s);
+                XmlReader xmlReader = XmlReader.Create(stringReader);
+
+                viewbox = (Viewbox)XamlReader.Load(xmlReader);
+            }
+
+            return viewbox;
+        }
+
+        public Grid Preview { get; set; } = new Grid() { Background = Brushes.White };
+
         [DoNotCheckEquality]
         public OverlayPosition OverlayPosition { get; set; }
+
+        public void OnOverlayPositionChanged()
+        {
+            UpdatePreview();
+        }
 
         private IconLibrary FindLibrary(string libraryName)
         {

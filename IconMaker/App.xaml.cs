@@ -25,10 +25,6 @@ namespace IconMaker
             IconLibPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "IconLib");
         }
 
-        public App()
-        {
-        }
-
         internal static async Task DispatchAction(Action action)
         {
             await Current.Dispatcher.BeginInvoke(action);
