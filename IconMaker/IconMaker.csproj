@@ -67,9 +67,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IntrusiveDictionary.cs" />
     <Compile Include="Model\Collection.cs" />
     <Compile Include="Model\CollectionIcon.cs" />
     <Compile Include="Model\ColorEx.cs" />
+    <Compile Include="Model\ColorMap.cs" />
+    <Compile Include="Model\ColorMapEntry.cs" />
     <Compile Include="Model\OverlayPosition.cs" />
     <Compile Include="Model\SaveOptions.cs" />
     <Compile Include="wpf\AspectRatioContentControl.cs" />

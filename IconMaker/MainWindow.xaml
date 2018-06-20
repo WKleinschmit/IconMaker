@@ -41,6 +41,7 @@
         <RoutedCommand x:Key="cmdNextIcon" />
         <RoutedCommand x:Key="cmdAddToCollection" />
         <RoutedCommand x:Key="cmdCloseCollection" />
+        <RoutedCommand x:Key="cmdModifyColor" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Command="{StaticResource cmdNew}"
@@ -71,6 +72,8 @@
                                   RoutedCommand="{StaticResource cmdAddToCollection}" />
         <wpf:RoutedCommandBinding Command="{Binding CmdCloseCollection}"
                                   RoutedCommand="{StaticResource cmdCloseCollection}" />
+        <wpf:RoutedCommandBinding Command="{Binding CmdModifyColor}"
+                                  RoutedCommand="{StaticResource cmdModifyColor}" />
     </i:Interaction.Behaviors>
     <Window.DataContext>
         <model:MainModel HasIconSelection="True" />
@@ -420,11 +423,18 @@
                                       SelectionMode="Extended"
                                       Grid.IsSharedSizeScope="True">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate DataType="model:ColorMapEntry">
                                         <StackPanel Orientation="Horizontal">
-                                            <wpf:ColorTag Color="{Binding Key}" />
+                                            <StackPanel.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Modify..."
+                                                              Command="{StaticResource cmdModifyColor}"
+                                                              CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource AncestorType=ListView}}"></MenuItem>
+                                                </ContextMenu>
+                                            </StackPanel.ContextMenu>
+                                            <wpf:ColorTag Color="{Binding OriginalColor, Mode=OneWay}" />
                                             <TextBlock Text=" => "/>
-                                            <wpf:ColorTag Color="{Binding Value}" />
+                                            <wpf:ColorTag Color="{Binding ModifiedColor}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

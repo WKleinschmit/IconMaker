@@ -34,6 +34,17 @@ namespace IconMaker.Model
             CmdNextIcon = new RelayCommand(OnNextIcon, CanNextIcon);
             CmdAddToCollection = new RelayCommand(OnAddToCollection, CanAddToCollection);
             CmdCloseCollection = new RelayCommand(OnCloseCollection);
+            CmdModifyColor = new RelayCommand(OnModifyColor, CanModifyColor);
+        }
+
+        private void OnModifyColor(object obj)
+        {
+            
+        }
+
+        private bool CanModifyColor(object arg)
+        {
+            return false;
         }
 
         private void OnCloseCollection(object obj)
@@ -104,6 +115,7 @@ namespace IconMaker.Model
         public RelayCommand CmdNextIcon { get; }
         public RelayCommand CmdAddToCollection { get; }
         public RelayCommand CmdCloseCollection { get; }
+        public RelayCommand CmdModifyColor { get; }
 
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
         {
@@ -331,15 +343,15 @@ namespace IconMaker.Model
                 if (parent.Attribute("Opacity")?.Value is string opacityString)
                     opacity = double.Parse(opacityString, CultureInfo.InvariantCulture);
 
-                ColorEx colorEx0 = new ColorEx { Color = color, Opacity = opacity };
+                ColorEx colorEx = new ColorEx { Color = color, Opacity = opacity };
 
-                if (colorMap.TryGetValue(colorEx0, out ColorEx colorEx1) && colorConverter.ConvertToInvariantString(colorEx1.Color) is string newValue)
+                if (colorMap.TryGetValue(colorEx, out ColorMapEntry entry) && colorConverter.ConvertToInvariantString(entry.ModifiedColor.Color) is string newValue)
                 {
                     colorAttribute.Value = newValue;
-                    parent.SetAttributeValue("Opacity", colorEx1.Opacity);
+                    parent.SetAttributeValue("Opacity", entry.ModifiedColor.Opacity);
                 }
                 else
-                    colorMap[colorEx0] = colorEx0;
+                    colorMap.Add(new ColorMapEntry(colorEx));
             }
         }
 

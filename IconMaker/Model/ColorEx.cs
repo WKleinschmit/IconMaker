@@ -25,9 +25,4 @@ namespace IconMaker.Model
             return $"{Color} ({Opacity:P0})";
         }
     }
-
-    public class ColorMap : Dictionary<ColorEx, ColorEx>
-    {
-
-    }
 }
