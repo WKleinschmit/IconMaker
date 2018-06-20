@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,6 +12,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using IconMaker.Annotations;
 using IconMaker.wpf;
 using PropertyChanged;
@@ -29,13 +33,21 @@ namespace IconMaker.Model
             CmdPrevIcon = new RelayCommand(OnPrevIcon, CanPrevIcon);
             CmdNextIcon = new RelayCommand(OnNextIcon, CanNextIcon);
             CmdAddToCollection = new RelayCommand(OnAddToCollection, CanAddToCollection);
+            CmdCloseCollection = new RelayCommand(OnCloseCollection);
+        }
+
+        private void OnCloseCollection(object obj)
+        {
+            if (obj is Collection collection)
+                Collections.Remove(collection);
         }
 
         private void OnAddToCollection(object obj)
         {
             for (int n = 0; n < SelectedCount; n++)
             {
-                Viewbox viewbox = CreateViewbox(n, out string title);
+                ColorMap colorMap = new ColorMap();
+                Viewbox viewbox = CreateViewbox(n, out string title, colorMap);
                 CurrentCollection.Icons.Add(new CollectionIcon(viewbox) { Title = title });
             }
         }
@@ -91,6 +103,7 @@ namespace IconMaker.Model
         public RelayCommand CmdPrevIcon { get; }
         public RelayCommand CmdNextIcon { get; }
         public RelayCommand CmdAddToCollection { get; }
+        public RelayCommand CmdCloseCollection { get; }
 
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
         {
@@ -226,6 +239,7 @@ namespace IconMaker.Model
                 UpdatePreview();
         }
 
+        public ColorMap CurrentColorMap { get; set; }
 
         private void UpdatePreview()
         {
@@ -241,12 +255,13 @@ namespace IconMaker.Model
             if (!HasIconSelection)
                 return;
 
-            Viewbox viewbox = CreateViewbox(SelectedIndex, out string _);
+            CurrentColorMap = new ColorMap();
+            Viewbox viewbox = CreateViewbox(SelectedIndex, out string _, CurrentColorMap);
             if (viewbox != null)
                 Preview.Children.Add(viewbox);
         }
 
-        private Viewbox CreateViewbox(int index, out string title)
+        private Viewbox CreateViewbox(int index, out string title, ColorMap colorMap)
         {
             Viewbox viewbox;
             if (HasOverlaySelection)
@@ -269,6 +284,7 @@ namespace IconMaker.Model
                     {
                         eltIconInOverlay.Add(element);
                     }
+                    ApplyColorMap(overlayXaml, colorMap);
 
                     viewbox = (Viewbox)XamlReader.Load(overlayXaml.CreateReader());
                     title = $"{SelectedIcons[iconIndex].Title}_{SelectedOverlays[overlayIndex].Title}";
@@ -281,17 +297,50 @@ namespace IconMaker.Model
             }
             else
             {
-                Icon icon = SelectedIcons[index];
+                Viewbox icon = SelectedIcons[index].Viewbox;
+                XDocument iconXaml = XDocument.Parse(XamlWriter.Save(icon));
+                ApplyColorMap(iconXaml, colorMap);
 
-                string s = XamlWriter.Save(icon.Viewbox);
-                StringReader stringReader = new StringReader(s);
-                XmlReader xmlReader = XmlReader.Create(stringReader);
+                viewbox = (Viewbox)XamlReader.Load(iconXaml.CreateReader());
 
-                viewbox = (Viewbox)XamlReader.Load(xmlReader);
+
                 title = $"{SelectedIcons[index].Title}";
             }
 
             return viewbox;
+        }
+
+        private static readonly ColorConverter colorConverter = new ColorConverter();
+
+        private static void ApplyColorMap(XNode xaml, ColorMap colorMap)
+        {
+            if (!(xaml.XPathEvaluate("//@*") is IEnumerable attributes))
+                return;
+
+            IEnumerable<XAttribute> colorValues = attributes.OfType<XAttribute>().Where(a => a.Value.StartsWith("#"));
+
+            foreach (XAttribute colorAttribute in colorValues)
+            {
+                if (!(colorConverter.ConvertFromInvariantString(colorAttribute.Value) is Color color))
+                    continue;
+
+                if (!(colorAttribute.Parent is XElement parent))
+                    continue;
+
+                double opacity = 1.0;
+                if (parent.Attribute("Opacity")?.Value is string opacityString)
+                    opacity = double.Parse(opacityString, CultureInfo.InvariantCulture);
+
+                ColorEx colorEx0 = new ColorEx { Color = color, Opacity = opacity };
+
+                if (colorMap.TryGetValue(colorEx0, out ColorEx colorEx1) && colorConverter.ConvertToInvariantString(colorEx1.Color) is string newValue)
+                {
+                    colorAttribute.Value = newValue;
+                    parent.SetAttributeValue("Opacity", colorEx1.Opacity);
+                }
+                else
+                    colorMap[colorEx0] = colorEx0;
+            }
         }
 
         public Grid Preview { get; set; } = new Grid() { Background = Brushes.Transparent };
