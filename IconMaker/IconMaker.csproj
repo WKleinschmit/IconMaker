@@ -67,10 +67,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Collection.cs" />
+    <Compile Include="Model\CollectionIcon.cs" />
     <Compile Include="Model\OverlayPosition.cs" />
+    <Compile Include="Model\SaveOptions.cs" />
     <Compile Include="wpf\AspectRatioContentControl.cs" />
     <Compile Include="wpf\BooleanToBrushConverter.cs" />
     <Compile Include="wpf\BooleanToVisibilityConverter.cs" />
+    <Compile Include="wpf\LineGrid.cs" />
+    <Compile Include="wpf\RelayCommand.cs" />
+    <Compile Include="wpf\RoutedCommandBinding.cs" />
     <Compile Include="wpf\ValueEqualsConverter.cs" />
     <Compile Include="wpf\IgnoreMouseWheelBehavior.cs" />
     <Compile Include="wpf\NaturalIndexConverter.cs" />

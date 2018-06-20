@@ -10,7 +10,9 @@ using System.Windows.Media;
 using System.Xml;
 using System.Xml.Linq;
 using IconMaker.Annotations;
+using IconMaker.wpf;
 using PropertyChanged;
+using static System.Math;
 
 namespace IconMaker.Model
 {
@@ -18,6 +20,77 @@ namespace IconMaker.Model
     {
         public static readonly XNamespace P = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml/presentation");
         public static readonly XNamespace X = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
+
+        public MainModel()
+        {
+            CmdNew = new RelayCommand(OnNew);
+            CmdOpen = new RelayCommand(OnOpen);
+            CmdSave = new RelayCommand(OnSave, CanSave);
+            CmdPrevIcon = new RelayCommand(OnPrevIcon, CanPrevIcon);
+            CmdNextIcon = new RelayCommand(OnNextIcon, CanNextIcon);
+            CmdAddToCollection = new RelayCommand(OnAddToCollection, CanAddToCollection);
+        }
+
+        private void OnAddToCollection(object obj)
+        {
+            for (int n = 0; n < SelectedCount; n++)
+            {
+                Viewbox viewbox = CreateViewbox(n, out string title);
+                CurrentCollection.Icons.Add(new CollectionIcon(viewbox) { Title = title });
+            }
+        }
+
+        private bool CanAddToCollection(object arg)
+        {
+            return CurrentCollection != null && SelectedCount > 0;
+        }
+
+        private void OnPrevIcon(object obj)
+        {
+            SelectedIndex = Max(0, SelectedIndex - 1);
+        }
+
+        private bool CanPrevIcon(object arg)
+        {
+            return SelectedIndex > 0;
+        }
+
+        private void OnNextIcon(object obj)
+        {
+            SelectedIndex = Min(SelectedCount - 1, SelectedIndex + 1);
+        }
+
+        private bool CanNextIcon(object arg)
+        {
+            return SelectedIndex < SelectedCount - 1;
+        }
+
+        private void OnNew(object obj)
+        {
+            Collections.Add(new Collection());
+        }
+
+        private void OnOpen(object obj)
+        {
+
+        }
+
+        private bool CanSave(object arg)
+        {
+            return CurrentCollection != null;
+        }
+
+        private void OnSave(object obj)
+        {
+
+        }
+
+        public RelayCommand CmdNew { get; }
+        public RelayCommand CmdOpen { get; }
+        public RelayCommand CmdSave { get; }
+        public RelayCommand CmdPrevIcon { get; }
+        public RelayCommand CmdNextIcon { get; }
+        public RelayCommand CmdAddToCollection { get; }
 
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
         {
@@ -168,12 +241,12 @@ namespace IconMaker.Model
             if (!HasIconSelection)
                 return;
 
-            Viewbox viewbox = CreateViewbox(SelectedIndex);
+            Viewbox viewbox = CreateViewbox(SelectedIndex, out string _);
             if (viewbox != null)
                 Preview.Children.Add(viewbox);
         }
 
-        private Viewbox CreateViewbox(int index)
+        private Viewbox CreateViewbox(int index, out string title)
         {
             Viewbox viewbox;
             if (HasOverlaySelection)
@@ -198,25 +271,30 @@ namespace IconMaker.Model
                     }
 
                     viewbox = (Viewbox)XamlReader.Load(overlayXaml.CreateReader());
+                    title = $"{SelectedIcons[iconIndex].Title}_{SelectedOverlays[overlayIndex].Title}";
                 }
                 else
+                {
                     viewbox = null;
+                    title = null;
+                }
             }
             else
             {
-                Icon icon = SelectedIcons[SelectedIndex];
+                Icon icon = SelectedIcons[index];
 
                 string s = XamlWriter.Save(icon.Viewbox);
                 StringReader stringReader = new StringReader(s);
                 XmlReader xmlReader = XmlReader.Create(stringReader);
 
                 viewbox = (Viewbox)XamlReader.Load(xmlReader);
+                title = $"{SelectedIcons[index].Title}";
             }
 
             return viewbox;
         }
 
-        public Grid Preview { get; set; } = new Grid() { Background = Brushes.White };
+        public Grid Preview { get; set; } = new Grid() { Background = Brushes.Transparent };
 
         [DoNotCheckEquality]
         public OverlayPosition OverlayPosition { get; set; }
@@ -244,5 +322,8 @@ namespace IconMaker.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public ObservableCollection<Collection> Collections { get; } = new ObservableCollection<Collection>();
+        public Collection CurrentCollection { get; set; }
     }
 }

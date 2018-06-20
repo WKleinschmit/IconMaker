@@ -15,6 +15,12 @@
         <wpf:BooleanToVisibilityConverter x:Key="B2V" />
         <wpf:NaturalIndexConverter x:Key="NaturalIndex" />
         <wpf:ValueEqualsConverter x:Key="Equals" />
+        <RoutedCommand x:Key="cmdNew" />
+        <RoutedCommand x:Key="cmdOpen" />
+        <RoutedCommand x:Key="cmdSave" />
+        <RoutedCommand x:Key="cmdPrevIcon" />
+        <RoutedCommand x:Key="cmdNextIcon" />
+        <RoutedCommand x:Key="cmdAddToCollection" />
         <HierarchicalDataTemplate x:Key="{x:Type model:IconLibrary}"
                                   DataType="model:IconLibrary"
                                   ItemsSource="{Binding Categories}">
@@ -35,6 +41,34 @@
             </StackPanel>
         </HierarchicalDataTemplate>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Command="{StaticResource cmdNew}"
+                    Gesture="CTRL+N" />
+        <KeyBinding Command="{StaticResource cmdOpen}"
+                    Gesture="CTRL+O" />
+        <KeyBinding Command="{StaticResource cmdSave}"
+                    Gesture="CTRL+S" />
+        <KeyBinding Command="{StaticResource cmdNextIcon}"
+                    Gesture="ALT+Right" />
+        <KeyBinding Command="{StaticResource cmdPrevIcon}"
+                    Gesture="ALT+Left" />
+        <KeyBinding Command="{StaticResource cmdAddToCollection}"
+                    Gesture="CTRL+W" />
+    </Window.InputBindings>
+    <i:Interaction.Behaviors>
+        <wpf:RoutedCommandBinding Command="{Binding CmdNew}"
+                                  RoutedCommand="{StaticResource cmdNew}" />
+        <wpf:RoutedCommandBinding Command="{Binding CmdOpen}"
+                                  RoutedCommand="{StaticResource cmdOpen}" />
+        <wpf:RoutedCommandBinding Command="{Binding CmdSave}"
+                                  RoutedCommand="{StaticResource cmdSave}" />
+        <wpf:RoutedCommandBinding Command="{Binding CmdNextIcon}"
+                                  RoutedCommand="{StaticResource cmdNextIcon}" />
+        <wpf:RoutedCommandBinding Command="{Binding CmdPrevIcon}"
+                                  RoutedCommand="{StaticResource cmdPrevIcon}" />
+        <wpf:RoutedCommandBinding Command="{Binding CmdAddToCollection}"
+                                  RoutedCommand="{StaticResource cmdAddToCollection}" />
+    </i:Interaction.Behaviors>
     <Window.DataContext>
         <model:MainModel HasIconSelection="True" />
     </Window.DataContext>
@@ -48,17 +82,20 @@
         <DockPanel Grid.Row="0"
                    LastChildFill="True">
             <Button DockPanel.Dock="Left"
-                    Margin="6">
+                    Margin="6"
+                    Command="{StaticResource cmdNew}">
                 <Image Source="img/newCollection@32px.png"
                        Stretch="None" />
             </Button>
             <Button DockPanel.Dock="Left"
-                    Margin="6">
+                    Margin="6"
+                    Command="{StaticResource cmdOpen}">
                 <Image Source="img/openCollection@32px.png"
                        Stretch="None" />
             </Button>
             <Button DockPanel.Dock="Left"
-                    Margin="6">
+                    Margin="6"
+                    Command="{StaticResource cmdSave}">
                 <Image Source="img/saveCollection@32px.png"
                        Stretch="None" />
             </Button>
@@ -138,7 +175,8 @@
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  PreviewKeyDown="LbIcons_OnPreviewKeyDown"
                                  SelectionMode="Extended"
-                                 SelectionChanged="LbIcons_OnSelectionChanged">
+                                 SelectionChanged="LbIcons_OnSelectionChanged"
+                                 BorderThickness="0">
                             <i:Interaction.Behaviors>
                                 <wpf:IgnoreMouseWheelBehavior />
                             </i:Interaction.Behaviors>
@@ -196,7 +234,8 @@
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      PreviewKeyDown="LbOverlays_OnPreviewKeyDown"
                                      SelectionMode="Extended"
-                                     SelectionChanged="LbOverlays_OnSelectionChanged">
+                                     SelectionChanged="LbOverlays_OnSelectionChanged"
+                                     BorderThickness="0">
                                 <i:Interaction.Behaviors>
                                     <wpf:IgnoreMouseWheelBehavior />
                                 </i:Interaction.Behaviors>
@@ -279,8 +318,10 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <wpf:AspectRatioContentControl MinHeight="150"
-                                                       Padding="5 0"
-                                                       Content="{Binding Preview}" />
+                                                       Padding="5 0">
+                            <wpf:LineGrid Content="{Binding Preview}"
+                                          GridCount="24" />
+                        </wpf:AspectRatioContentControl>
                         <StackPanel Grid.Row="1"
                                     Margin="0 3"
                                     HorizontalAlignment="Center"
@@ -374,7 +415,7 @@
                                     HorizontalAlignment="Center"
                                     Orientation="Horizontal">
                             <Button Margin="3"
-                                    Click="OnPrevIcon">
+                                    Command="{StaticResource cmdPrevIcon}">
                                 <Canvas Width="16"
                                         Height="16">
                                     <Path Stroke="Black"
@@ -394,7 +435,7 @@
                                 <Run Text="{Binding SelectedCount}" />
                             </TextBlock>
                             <Button Margin="3"
-                                    Click="OnNextIcon">
+                                    Command="{StaticResource cmdNextIcon}">
                                 <Canvas Width="16"
                                         Height="16">
                                     <Path Stroke="Black"
@@ -406,7 +447,8 @@
                                     </Path>
                                 </Canvas>
                             </Button>
-                            <Button Margin="9 3 3 3">
+                            <Button Margin="9 3 3 3"
+                                    Command="{StaticResource cmdAddToCollection}">
                                 <StackPanel Orientation="Horizontal">
                                     <Canvas Width="16"
                                             Height="16">
@@ -430,6 +472,64 @@
                       Height="3"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Bottom" />
+        <TabControl Grid.Row="2"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Collections}"
+                    SelectedValue="{Binding CurrentCollection, Mode=OneWayToSource}">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem"
+                       BasedOn="{StaticResource {x:Type TabItem}}">
+                    <Setter Property="IsSelected"
+                            Value="True" />
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="model:Collection">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" />
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="model:Collection">
+                    <ScrollViewer Background="{x:Static SystemColors.WindowBrush}">
+                        <ListBox ItemsSource="{Binding Icons}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <i:Interaction.Behaviors>
+                                <wpf:IgnoreMouseWheelBehavior />
+                            </i:Interaction.Behaviors>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True"
+                                               Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="model:CollectionIcon">
+                                    <DockPanel HorizontalAlignment="Center"
+                                               IsHitTestVisible="False"
+                                               LastChildFill="True"
+                                               Width="94"
+                                               Height="114">
+                                        <ContentControl Height="48"
+                                                        Width="48"
+                                                        Margin="8"
+                                                        DockPanel.Dock="Top"
+                                                        Content="{Binding Icon}"
+                                                        HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding Title}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0 3"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
         <StatusBar Grid.Row="3">
             <StatusBarItem x:Name="LoadProgress"
                            Visibility="Collapsed">

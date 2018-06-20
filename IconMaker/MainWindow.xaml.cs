@@ -263,16 +263,6 @@ namespace IconMaker
             _model.SelectedOverlays = lbOverlays.SelectedItems.OfType<IconOverlay>().ToArray();
         }
 
-        private void OnPrevIcon(object sender, RoutedEventArgs e)
-        {
-            _model.SelectedIndex = Max(0, _model.SelectedIndex - 1);
-        }
-
-        private void OnNextIcon(object sender, RoutedEventArgs e)
-        {
-            _model.SelectedIndex = Min(_model.SelectedCount - 1, _model.SelectedIndex + 1);
-        }
-
         private void OnOverlayPositionClick(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleButton toggleButton && toggleButton.Tag is OverlayPosition overlayPosition)
