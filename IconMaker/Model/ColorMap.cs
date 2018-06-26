@@ -1,12 +1,14 @@
-﻿namespace IconMaker.Model
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+
+namespace IconMaker.Model
 {
-    public class ColorMap : IntrusiveDictionary<ColorEx, ColorMapEntry>
+    public class ColorMap : ObservableCollection<ColorMapEntry>
     {
-        public ColorMap()
-            : base(v => v.OriginalColor)
+        public bool TryGetValue(ColorEx colorEx, out ColorMapEntry colorMapEntry)
         {
-
+            colorMapEntry = this.FirstOrDefault(e => e.OriginalColor == colorEx);
+            return colorMapEntry != null;
         }
-
     }
 }

@@ -38,6 +38,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>IconMaker.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PropertyChanged2, Version=2.5.6.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged2.Fody.2.5.6\lib\net40\PropertyChanged2.dll</HintPath>
@@ -71,8 +74,19 @@
     <Compile Include="Model\Collection.cs" />
     <Compile Include="Model\CollectionIcon.cs" />
     <Compile Include="Model\ColorEx.cs" />
+    <Compile Include="Model\ColorFilters\ColorSpaceShifter.cs" />
+    <Compile Include="Model\ColorFilters\ColorWheel.xaml.cs">
+      <DependentUpon>ColorWheel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ColorFilters\HCL601Shift.cs" />
+    <Compile Include="Model\ColorFilters\HCL709Shift.cs" />
+    <Compile Include="Model\ColorFilters\HSIShift.cs" />
+    <Compile Include="Model\ColorFilters\HSLShift.cs" />
+    <Compile Include="Model\ColorFilters\HSVShift.cs" />
     <Compile Include="Model\ColorMap.cs" />
     <Compile Include="Model\ColorMapEntry.cs" />
+    <Compile Include="Model\ColorFilters\IColorFilter.cs" />
+    <Compile Include="Model\MainModel.Commands.cs" />
     <Compile Include="Model\OverlayPosition.cs" />
     <Compile Include="Model\SaveOptions.cs" />
     <Compile Include="wpf\AspectRatioContentControl.cs" />
@@ -82,8 +96,10 @@
       <DependentUpon>ColorTag.xaml</DependentUpon>
     </Compile>
     <Compile Include="wpf\LineGrid.cs" />
+    <Compile Include="wpf\ListViewExtensions.cs" />
     <Compile Include="wpf\RelayCommand.cs" />
     <Compile Include="wpf\RoutedCommandBinding.cs" />
+    <Compile Include="wpf\SelectedItemsBinder.cs" />
     <Compile Include="wpf\ValueEqualsConverter.cs" />
     <Compile Include="wpf\IgnoreMouseWheelBehavior.cs" />
     <Compile Include="wpf\NaturalIndexConverter.cs" />
@@ -107,6 +123,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Model\ColorFilters\ColorWheel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -155,6 +175,9 @@
     <Resource Include="img\newCollection%4032px.png" />
     <Resource Include="img\openCollection%4032px.png" />
     <Resource Include="img\saveCollection%4032px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="IconMaker.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.0.4\build\Fody.targets" Condition="Exists('..\packages\Fody.3.0.4\build\Fody.targets')" />

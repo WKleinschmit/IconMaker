@@ -4,118 +4,28 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using IconMaker.Annotations;
 using IconMaker.wpf;
 using PropertyChanged;
-using static System.Math;
 
 namespace IconMaker.Model
 {
-    public class MainModel : INotifyPropertyChanged
+    public partial class MainModel : INotifyPropertyChanged
     {
         public static readonly XNamespace P = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml/presentation");
         public static readonly XNamespace X = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
 
         public MainModel()
         {
-            CmdNew = new RelayCommand(OnNew);
-            CmdOpen = new RelayCommand(OnOpen);
-            CmdSave = new RelayCommand(OnSave, CanSave);
-            CmdPrevIcon = new RelayCommand(OnPrevIcon, CanPrevIcon);
-            CmdNextIcon = new RelayCommand(OnNextIcon, CanNextIcon);
-            CmdAddToCollection = new RelayCommand(OnAddToCollection, CanAddToCollection);
-            CmdCloseCollection = new RelayCommand(OnCloseCollection);
-            CmdModifyColor = new RelayCommand(OnModifyColor, CanModifyColor);
+            InitCommands();
         }
-
-        private void OnModifyColor(object obj)
-        {
-            
-        }
-
-        private bool CanModifyColor(object arg)
-        {
-            return false;
-        }
-
-        private void OnCloseCollection(object obj)
-        {
-            if (obj is Collection collection)
-                Collections.Remove(collection);
-        }
-
-        private void OnAddToCollection(object obj)
-        {
-            for (int n = 0; n < SelectedCount; n++)
-            {
-                ColorMap colorMap = new ColorMap();
-                Viewbox viewbox = CreateViewbox(n, out string title, colorMap);
-                CurrentCollection.Icons.Add(new CollectionIcon(viewbox) { Title = title });
-            }
-        }
-
-        private bool CanAddToCollection(object arg)
-        {
-            return CurrentCollection != null && SelectedCount > 0;
-        }
-
-        private void OnPrevIcon(object obj)
-        {
-            SelectedIndex = Max(0, SelectedIndex - 1);
-        }
-
-        private bool CanPrevIcon(object arg)
-        {
-            return SelectedIndex > 0;
-        }
-
-        private void OnNextIcon(object obj)
-        {
-            SelectedIndex = Min(SelectedCount - 1, SelectedIndex + 1);
-        }
-
-        private bool CanNextIcon(object arg)
-        {
-            return SelectedIndex < SelectedCount - 1;
-        }
-
-        private void OnNew(object obj)
-        {
-            Collections.Add(new Collection());
-        }
-
-        private void OnOpen(object obj)
-        {
-
-        }
-
-        private bool CanSave(object arg)
-        {
-            return CurrentCollection != null;
-        }
-
-        private void OnSave(object obj)
-        {
-
-        }
-
-        public RelayCommand CmdNew { get; }
-        public RelayCommand CmdOpen { get; }
-        public RelayCommand CmdSave { get; }
-        public RelayCommand CmdPrevIcon { get; }
-        public RelayCommand CmdNextIcon { get; }
-        public RelayCommand CmdAddToCollection { get; }
-        public RelayCommand CmdCloseCollection { get; }
-        public RelayCommand CmdModifyColor { get; }
 
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
         {
@@ -343,7 +253,7 @@ namespace IconMaker.Model
                 if (parent.Attribute("Opacity")?.Value is string opacityString)
                     opacity = double.Parse(opacityString, CultureInfo.InvariantCulture);
 
-                ColorEx colorEx = new ColorEx { Color = color, Opacity = opacity };
+                ColorEx colorEx = new ColorEx(color, opacity);
 
                 if (colorMap.TryGetValue(colorEx, out ColorMapEntry entry) && colorConverter.ConvertToInvariantString(entry.ModifiedColor.Color) is string newValue)
                 {

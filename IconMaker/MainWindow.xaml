@@ -6,9 +6,9 @@
         xmlns:model="clr-namespace:IconMaker.Model"
         xmlns:wpf="clr-namespace:IconMaker.wpf"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Icon Maker"
+        Icon="IconMaker.ico"
         Activated="MainWindow_OnActivated">
     <Window.Resources>
         <HierarchicalDataTemplate x:Key="{x:Type model:IconLibrary}"
@@ -421,15 +421,16 @@
                             <ListView Grid.Row="2"
                                       ItemsSource="{Binding CurrentColorMap}"
                                       SelectionMode="Extended"
-                                      Grid.IsSharedSizeScope="True">
+                                      Grid.IsSharedSizeScope="True"
+                                      wpf:ListViewExtensions.SelectedValues="{Binding SelectedColorMapEntries, Mode=OneWay}"
+                                      x:Name="ColorMap">
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="model:ColorMapEntry">
                                         <StackPanel Orientation="Horizontal">
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Modify..."
-                                                              Command="{StaticResource cmdModifyColor}"
-                                                              CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource AncestorType=ListView}}"></MenuItem>
+                                                              Command="{StaticResource cmdModifyColor}"/>
                                                 </ContextMenu>
                                             </StackPanel.ContextMenu>
                                             <wpf:ColorTag Color="{Binding OriginalColor, Mode=OneWay}" />
