@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using IconMaker.Model.ColorFilters;
 using IconMaker.wpf;
 
 namespace IconMaker.Model
@@ -33,6 +34,8 @@ namespace IconMaker.Model
 
         private void OnModifyColor(object obj)
         {
+            ModifyColors dlg = new ModifyColors();
+            dlg.ShowDialog();
         }
 
         private bool CanModifyColor(object arg)

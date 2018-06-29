@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.IO.Packaging;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -60,5 +61,28 @@ namespace IconMaker
             await x.Task;
             return (TResult)x.Result;
         }
+    }
+
+    internal static class Global
+    {
+        public static Uri MakePackUri(string relativeFile)
+        {
+            string uriString = "pack://application:,,,/" + AssemblyShortName + ";component/" + relativeFile;
+            return new Uri(uriString);
+        }
+        private static string AssemblyShortName
+        {
+            get
+            {
+                if (_assemblyShortName != null)
+                    return _assemblyShortName;
+
+                Assembly a = typeof(Global).Assembly;
+                _assemblyShortName = a.ToString().Split(',')[0];
+                return _assemblyShortName;
+            }
+        }
+
+        private static string _assemblyShortName;
     }
 }

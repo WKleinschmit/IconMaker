@@ -5,25 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:IconMaker.Model.ColorFilters"
              mc:Ignorable="d"
-             d:DesignHeight="300"
-             d:DesignWidth="300">
-    <Canvas Background="Transparent">
-        <Path Fill="Gray"
-              Stroke="red">
-            <Path.Data>
-                <CombinedGeometry GeometryCombineMode="Exclude">
-                    <CombinedGeometry.Geometry1>
-                        <EllipseGeometry Center="150,150"
-                                         RadiusX="150"
-                                         RadiusY="150" />
-                    </CombinedGeometry.Geometry1>
-                    <CombinedGeometry.Geometry2>
-                        <EllipseGeometry Center="150,150"
-                                         RadiusX="100"
-                                         RadiusY="100" />
-                    </CombinedGeometry.Geometry2>
-                </CombinedGeometry>
-            </Path.Data>
-        </Path>
-    </Canvas>
+             x:Name="Wheel">
+    <Border Background="Transparent">
+        <Border.Clip>
+            <CombinedGeometry GeometryCombineMode="Exclude">
+                <CombinedGeometry.Geometry1>
+                    <EllipseGeometry RadiusX="{Binding OuterRadius, ElementName=Wheel}"
+                                     RadiusY="{Binding OuterRadius, ElementName=Wheel}"
+                                     Center="{Binding CenterPoint, ElementName=Wheel}" />
+                </CombinedGeometry.Geometry1>
+                <CombinedGeometry.Geometry2>
+                    <EllipseGeometry RadiusX="{Binding InnerRadius, ElementName=Wheel}"
+                                     RadiusY="{Binding InnerRadius, ElementName=Wheel}"
+                                     Center="{Binding CenterPoint, ElementName=Wheel}" />
+                </CombinedGeometry.Geometry2>
+            </CombinedGeometry>
+        </Border.Clip>
+        <Border.Effect>
+            <local:HueRingEffect Opacity="0" />
+        </Border.Effect>
+    </Border>
 </UserControl>

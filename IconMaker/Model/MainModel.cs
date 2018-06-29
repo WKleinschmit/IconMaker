@@ -25,6 +25,7 @@ namespace IconMaker.Model
         public MainModel()
         {
             InitCommands();
+            Collections.Add(new Collection());
         }
 
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
