@@ -74,9 +74,6 @@
     <Compile Include="Model\CollectionIcon.cs" />
     <Compile Include="Model\ColorEx.cs" />
     <Compile Include="Model\ColorFilters\ColorSpaceShifter.cs" />
-    <Compile Include="Model\ColorFilters\ColorWheel.xaml.cs">
-      <DependentUpon>ColorWheel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Model\ColorFilters\HCL601Shift.cs" />
     <Compile Include="Model\ColorFilters\HCL709Shift.cs" />
     <Compile Include="Model\ColorFilters\HSIShift.cs" />
@@ -98,6 +95,7 @@
     <Compile Include="wpf\ColorTag.xaml.cs">
       <DependentUpon>ColorTag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="wpf\ColorWheel.cs" />
     <Compile Include="wpf\LineGrid.cs" />
     <Compile Include="wpf\ListViewExtensions.cs" />
     <Compile Include="wpf\RelayCommand.cs" />
@@ -126,10 +124,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Model\ColorFilters\ColorWheel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Model\ColorFilters\ModifyColors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

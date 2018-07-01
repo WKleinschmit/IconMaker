@@ -29,15 +29,5 @@ namespace IconMaker.Model.ColorFilters
 
         public static readonly DependencyProperty InputProperty =
             RegisterPixelShaderSamplerProperty("Input", typeof(HueRingEffect), 0);
-
-        public double Opacity
-        {
-            get => (double)GetValue(OpacityProperty);
-            set => SetValue(OpacityProperty, value);
-        }
-
-        public static readonly DependencyProperty OpacityProperty =
-            DependencyProperty.Register("Opacity", typeof(double), typeof(HueRingEffect),
-                new UIPropertyMetadata(1.0d, PixelShaderConstantCallback(0)));
     }
 }

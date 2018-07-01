@@ -4,16 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IconMaker.Model.ColorFilters"
+        xmlns:wpf="clr-namespace:IconMaker.wpf"
         mc:Ignorable="d"
         Title="ModifyColors"
         Height="450"
         Width="800">
-    <Grid>
-        <local:ColorWheel Outer="1.0"
-                          Inner="0.6"
-                          Grid.ColumnSpan="2" />
-        <local:ColorWheel Outer="0.5"
-                          Inner="0.1"
-                          Grid.ColumnSpan="2" />
+    <Grid Background="{x:Static SystemColors.ControlBrush}">
+        <wpf:ColorWheel OuterRadius="1.0"
+                        InnerRadius="0.6"
+                        RenderTransformOrigin="0.5,0.5"
+                        Cursor="{x:Static Cursors.Hand}">
+            <wpf:ColorWheel.RenderTransform>
+                <RotateTransform Angle="30" />
+            </wpf:ColorWheel.RenderTransform>
+        </wpf:ColorWheel>
+        <wpf:ColorWheel OuterRadius="0.5"
+                        InnerRadius="0.1"
+                        RenderTransformOrigin="0.5,0.5">
+        </wpf:ColorWheel>
     </Grid>
 </Window>

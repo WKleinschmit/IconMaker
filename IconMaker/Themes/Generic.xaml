@@ -1,7 +1,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:IconMaker"
-                    xmlns:wpf="clr-namespace:IconMaker.wpf">
+                    xmlns:wpf="clr-namespace:IconMaker.wpf"
+                    xmlns:colorFilters="clr-namespace:IconMaker.Model.ColorFilters">
 
 
     <Style TargetType="{x:Type wpf:AspectRatioContentControl}">
@@ -13,8 +14,37 @@
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
+                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
                     </Canvas>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type wpf:ColorWheel}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type wpf:ColorWheel}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border Background="Transparent"
+                                BorderThickness="0">
+                            <Border.Clip>
+                                <CombinedGeometry GeometryCombineMode="Exclude">
+                                    <CombinedGeometry.Geometry1>
+                                        <EllipseGeometry x:Name="Geo1" />
+                                    </CombinedGeometry.Geometry1>
+                                    <CombinedGeometry.Geometry2>
+                                        <EllipseGeometry x:Name="Geo2" />
+                                    </CombinedGeometry.Geometry2>
+                                </CombinedGeometry>
+                            </Border.Clip>
+                            <Border.Effect>
+                                <colorFilters:HueRingEffect />
+                            </Border.Effect>
+                        </Border>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
