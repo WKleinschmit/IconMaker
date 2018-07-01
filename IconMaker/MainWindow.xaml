@@ -116,14 +116,14 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0"
-                       Background="PowderBlue"
+                       Background="#FF3DB3C2"
                        LastChildFill="True"
                        Margin="0,0,3,0">
                 <TextBlock DockPanel.Dock="Top"
                            FontSize="16"
                            Margin="4"
                            Background="Transparent"
-                           Foreground="RoyalBlue">Icon Sets</TextBlock>
+                           Foreground="Navy">Icon Sets</TextBlock>
                 <TreeView ItemsSource="{Binding Libraries}"
                           ItemTemplateSelector="{StaticResource TTS}"
                           x:Name="LibraryTree"
@@ -144,7 +144,7 @@
                           HorizontalAlignment="Right"
                           VerticalAlignment="Stretch" />
             <DockPanel Grid.Column="1"
-                       Background="PowderBlue"
+                       Background="#FF3DB3C2"
                        LastChildFill="True"
                        Margin="0,0,3,0">
                 <StackPanel DockPanel.Dock="Top"
@@ -152,13 +152,13 @@
                     <TextBlock FontSize="16"
                                Margin="4 4 0 4"
                                Background="Transparent"
-                               Foreground="RoyalBlue"
+                               Foreground="Navy"
                                Text="{Binding Library.Name, Mode=OneWay}">
                     </TextBlock>
                     <TextBlock FontSize="16"
                                Margin="0 4 4 4"
                                Background="Transparent"
-                               Foreground="RoyalBlue"
+                               Foreground="Navy"
                                Visibility="{Binding HasCategory, Converter={StaticResource B2V}}"
                                wpf:TextBlockExtension.RemoveEmptyRuns="True"
                                wpf:TextBlockExtension.PreserveSpace="False">
@@ -227,7 +227,7 @@
                                    FontSize="16"
                                    Margin="4"
                                    Background="Transparent"
-                                   Foreground="RoyalBlue"
+                                   Foreground="Navy"
                                    Visibility="{Binding HasLibrary, Converter={StaticResource B2V}, ConverterParameter=Visible;Hidden}"
                                    wpf:TextBlockExtension.RemoveEmptyRuns="True"
                                    wpf:TextBlockExtension.PreserveSpace="False">
@@ -284,20 +284,20 @@
                           HorizontalAlignment="Right"
                           VerticalAlignment="Stretch" />
             <DockPanel Grid.Column="2"
-                       Background="PowderBlue"
+                       Background="#FF3DB3C2"
                        LastChildFill="True">
                 <StackPanel DockPanel.Dock="Top"
                             Orientation="Horizontal">
                     <TextBlock FontSize="16"
                                Margin="4 4 0 4"
                                Background="Transparent"
-                               Foreground="RoyalBlue"
+                               Foreground="Navy"
                                Text="Generated Icons">
                     </TextBlock>
                     <TextBlock FontSize="16"
                                Margin="0 4 4 4"
                                Background="Transparent"
-                               Foreground="RoyalBlue"
+                               Foreground="Navy"
                                Visibility="{Binding HasIconSelection, Converter={StaticResource B2V}}"
                                wpf:TextBlockExtension.RemoveEmptyRuns="True"
                                wpf:TextBlockExtension.PreserveSpace="False">

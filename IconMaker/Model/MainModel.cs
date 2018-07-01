@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using IconMaker.Annotations;
-using IconMaker.wpf;
 using PropertyChanged;
 
 namespace IconMaker.Model
