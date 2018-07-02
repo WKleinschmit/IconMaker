@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -26,6 +27,8 @@ namespace IconMaker.Model
             InitCommands();
             Collections.Add(new Collection());
         }
+
+        public Window Owner { get; internal set; }
 
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
         {

@@ -43,6 +43,7 @@
         <RoutedCommand x:Key="cmdAddToCollection" />
         <RoutedCommand x:Key="cmdCloseCollection" />
         <RoutedCommand x:Key="cmdModifyColor" />
+        <RoutedCommand x:Key="cmdRefreshDatabase" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Command="{StaticResource cmdNew}"
@@ -75,6 +76,8 @@
                                   RoutedCommand="{StaticResource cmdCloseCollection}" />
         <wpf:RoutedCommandBinding Command="{Binding CmdModifyColor}"
                                   RoutedCommand="{StaticResource cmdModifyColor}" />
+        <wpf:RoutedCommandBinding Command="{Binding CmdRefreshDatabase}"
+                                  RoutedCommand="{StaticResource cmdRefreshDatabase}" />
     </i:Interaction.Behaviors>
     <Window.DataContext>
         <model:MainModel HasIconSelection="True" />
@@ -104,6 +107,12 @@
                     Margin="6"
                     Command="{StaticResource cmdSave}">
                 <Image Source="img/saveCollection@32px.png"
+                       Stretch="None" />
+            </Button>
+            <Button DockPanel.Dock="Left"
+                    Margin="12 6 6 6"
+                    Command="{StaticResource cmdRefreshDatabase}">
+                <Image Source="img/database-refresh@32px.png"
                        Stretch="None" />
             </Button>
             <Grid />

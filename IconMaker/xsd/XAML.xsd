@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" targetNamespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1">
+	<xs:element name="Viewbox">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:group ref="Geometries_G" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="Stretch" use="required" fixed="Uniform"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Canvas">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Canvas.RenderTransform" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TransformGroup">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="TranslateTransform">
+											<xs:complexType>
+												<xs:attribute name="X" type="xs:double" use="required"/>
+												<xs:attribute name="Y" type="xs:double" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:group ref="Geometries_G" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="Canvas.Left" type="xs:double"/>
+			<xs:attribute name="Canvas.Top" type="xs:double"/>
+			<xs:attribute name="Width" type="xs:double"/>
+			<xs:attribute name="Height" type="xs:double"/>
+			<xs:attribute name="Clip" type="xs:string"/>
+			<xs:attribute name="Uid">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="Overlay"/>
+						<xs:enumeration value="Icon"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="Opacity" type="xs:double"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="lineCap">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="Round"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="lineJoin">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="Round"/>
+			<xs:enumeration value="Miter"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Geometry_T">
+		<xs:attribute name="Canvas.Left" type="xs:double"/>
+		<xs:attribute name="Canvas.Top" type="xs:double"/>
+		<xs:attribute name="Fill">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="#[0-9A-F]{6}"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Stroke">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="#[0-9A-F]{6}"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="StrokeThickness" type="xs:double"/>
+		<xs:attribute name="StrokeMiterLimit" type="xs:double"/>
+		<xs:attribute name="StrokeStartLineCap" type="lineCap"/>
+		<xs:attribute name="StrokeEndLineCap" type="lineCap"/>
+		<xs:attribute name="StrokeLineJoin" type="lineJoin"/>
+		<xs:attribute name="Opacity" type="xs:double"/>
+	</xs:complexType>
+	<xs:group name="Geometries_G">
+		<xs:choice>
+			<xs:element ref="Canvas"/>
+			<xs:element name="Ellipse">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="Geometry_T">
+							<xs:attribute name="Width" type="xs:double" use="required"/>
+							<xs:attribute name="Height" type="xs:double" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Path">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="Geometry_T">
+							<xs:attribute name="Data" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Rectangle">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="Geometry_T">
+							<xs:attribute name="Width" type="xs:double" use="required"/>
+							<xs:attribute name="Height" type="xs:double" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Polyline">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="Geometry_T">
+							<xs:attribute name="Points" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Polygon">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="Geometry_T">
+							<xs:attribute name="Points" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Line">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="Geometry_T">
+							<xs:attribute name="X1" type="xs:double" use="required"/>
+							<xs:attribute name="Y1" type="xs:double" use="required"/>
+							<xs:attribute name="X2" type="xs:double" use="required"/>
+							<xs:attribute name="Y2" type="xs:double" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+</xs:schema>

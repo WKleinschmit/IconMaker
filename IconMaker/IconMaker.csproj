@@ -86,9 +86,25 @@
     <Compile Include="Model\ColorMap.cs" />
     <Compile Include="Model\ColorMapEntry.cs" />
     <Compile Include="Model\ColorFilters\IColorFilter.cs" />
-    <Compile Include="Model\MainModel.Commands.cs" />
+    <Compile Include="Model\MainModel.Commands.cs">
+      <DependentUpon>MainModel.cs</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\MainModel.Database.cs">
+      <DependentUpon>MainModel.cs</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\OverlayPosition.cs" />
     <Compile Include="Model\SaveOptions.cs" />
+    <Compile Include="ProgressDialog\ProgressDialog.xaml.cs">
+      <DependentUpon>ProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressDialog\ProgressDialogCancellationExcpetion.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogContext.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogResult.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogSettings.cs" />
+    <Compile Include="ProgressDialog\ProgressStatus.cs" />
+    <Compile Include="WindowSettings.cs" />
     <Compile Include="wpf\AspectRatioContentControl.cs" />
     <Compile Include="wpf\BooleanToBrushConverter.cs" />
     <Compile Include="wpf\BooleanToVisibilityConverter.cs" />
@@ -128,6 +144,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ProgressDialog\ProgressDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -156,6 +176,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="xsd\IconMaker.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd\XAML.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <Resource Include="bin\Debug\Hue.cso" Condition=" '$(Configuration)' == 'Debug' " />
     <Resource Include="bin\Release\Hue.cso" Condition=" '$(Configuration)' == 'Release' " />
     <None Include="packages.config" />
@@ -191,6 +217,9 @@
       <DisableOptimizations>False</DisableOptimizations>
       <ObjectFileOutput>Hue.fx</ObjectFileOutput>
     </PixelShader>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\database-refresh%4032px.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.1.3\build\Fody.targets" Condition="Exists('..\packages\Fody.3.1.3\build\Fody.targets')" />

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using IconMaker.Model.ColorFilters;
+using IconMaker.ProgressDialog;
 using IconMaker.wpf;
 
 namespace IconMaker.Model
@@ -17,6 +18,7 @@ namespace IconMaker.Model
         public RelayCommand CmdAddToCollection { get; private set; }
         public RelayCommand CmdCloseCollection { get; private set; }
         public RelayCommand CmdModifyColor { get; private set; }
+        public RelayCommand CmdRefreshDatabase { get; private set; }
 
         private void InitCommands()
         {
@@ -28,6 +30,22 @@ namespace IconMaker.Model
             CmdAddToCollection = new RelayCommand(OnAddToCollection, CanAddToCollection);
             CmdCloseCollection = new RelayCommand(OnCloseCollection);
             CmdModifyColor = new RelayCommand(OnModifyColor, CanModifyColor);
+            CmdRefreshDatabase = new RelayCommand(OnRefreshDatabase, CanRefreshDatabase);
+        }
+
+        private void OnRefreshDatabase(object obj)
+        {
+            ProgressDialog.ProgressDialog.Execute(
+                Owner, "Updating Database", new Action(DoDatabaseUpdate), new ProgressDialogSettings
+                {
+                    ShowCancelButton = false,
+                    ShowSubLabel = true
+                });
+        }
+
+        private bool CanRefreshDatabase(object arg)
+        {
+            return true;
         }
 
         public IList SelectedColorMapEntries { get; set; } = new List<ColorMapEntry>();

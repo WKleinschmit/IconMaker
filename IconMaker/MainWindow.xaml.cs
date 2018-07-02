@@ -33,6 +33,7 @@ namespace IconMaker
 
             model.HasIconSelection = false;
             _model = model;
+            _model.Owner = this;
         }
 
         private bool isInitialized;
