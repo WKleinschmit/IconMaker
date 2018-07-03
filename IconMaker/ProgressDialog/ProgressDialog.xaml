@@ -7,7 +7,7 @@
         Width="340"
         MinHeight="140"
         MinWidth="340"
-        Title="XtractBCS"
+        Title="IconMaker"
         FontFamily="Segoe UI"
         ResizeMode="CanResize"
         WindowStyle="SingleBorderWindow"
@@ -39,7 +39,6 @@
                    TextTrimming="CharacterEllipsis"
                    DockPanel.Dock="Top" />
         <TextBlock x:Name="SubTextLabel"
-                   Text="..."
                    FontStyle="Italic"
                    Visibility="Collapsed"
                    Margin="0,5,0,5"

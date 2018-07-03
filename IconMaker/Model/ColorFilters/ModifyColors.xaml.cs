@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,17 @@ namespace IconMaker.Model.ColorFilters
         public ModifyColors()
         {
             InitializeComponent();
+            DataContext = this;
+        }
+
+        public ColorMap ColorMap { get; } = new ColorMap();
+
+        public void SetEntries(IList selectedColorMapEntries)
+        {
+            foreach (ColorMapEntry entry in selectedColorMapEntries)
+            {
+                ColorMap.Add(entry);
+            }
         }
     }
 }

@@ -30,6 +30,18 @@ namespace IconMaker.Model
 
         public Window Owner { get; internal set; }
 
+        public void OnOwnerChanged()
+        {
+            if (Owner != null)
+                Owner.Activated += OwnerOnActivated;
+        }
+
+        private void OwnerOnActivated(object sender, EventArgs e)
+        {
+            Owner.Activated -= OwnerOnActivated;
+            ReadDatabase();
+        }
+
         public void AddOverlay(string relativeFileName, Viewbox viewbox)
         {
             string[] parts = relativeFileName.Split(@"\".ToCharArray(), 3, StringSplitOptions.RemoveEmptyEntries);

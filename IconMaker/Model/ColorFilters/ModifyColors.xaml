@@ -5,22 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IconMaker.Model.ColorFilters"
         xmlns:wpf="clr-namespace:IconMaker.wpf"
+        xmlns:model="clr-namespace:IconMaker.Model"
         mc:Ignorable="d"
         Title="ModifyColors"
-        Height="450"
-        Width="800">
-    <Grid Background="{x:Static SystemColors.ControlBrush}">
-        <wpf:ColorWheel OuterRadius="1.0"
-                        InnerRadius="0.6"
-                        RenderTransformOrigin="0.5,0.5"
-                        Cursor="{x:Static Cursors.Hand}">
-            <wpf:ColorWheel.RenderTransform>
-                <RotateTransform Angle="30" />
-            </wpf:ColorWheel.RenderTransform>
-        </wpf:ColorWheel>
-        <wpf:ColorWheel OuterRadius="0.5"
-                        InnerRadius="0.1"
-                        RenderTransformOrigin="0.5,0.5">
-        </wpf:ColorWheel>
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer Grid.Column="0" Margin="6">
+                <ListView ItemsSource="{Binding ColorMap}"
+                          SelectionMode="Extended"
+                          Grid.IsSharedSizeScope="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="model:ColorMapEntry">
+                            <StackPanel Orientation="Horizontal">
+                                <wpf:ColorTag Color="{Binding OriginalColor, Mode=OneWay}" />
+                                <TextBlock Text=" => " />
+                                <wpf:ColorTag Color="{Binding ModifiedColor}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+        </Grid>
+        <DockPanel Grid.Row="1"
+                   LastChildFill="True">
+            <Button DockPanel.Dock="Right"
+                    MinWidth="75"
+                    Margin="6"
+                    IsDefault="True">OK</Button>
+            <Button DockPanel.Dock="Right"
+                    MinWidth="75"
+                    Margin="6"
+                    IsCancel="True">Cancel</Button>
+            <Separator Visibility="Hidden" />
+        </DockPanel>
     </Grid>
 </Window>

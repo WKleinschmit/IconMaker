@@ -217,7 +217,10 @@ namespace IconMaker.ProgressDialog
             ProgressDialog dialog = new ProgressDialog(settings) { Owner = owner };
 
             if (!string.IsNullOrEmpty(label))
+            {
                 dialog.Label = label;
+                dialog.Title = label;
+            }
 
             return dialog.Execute(operation);
         }

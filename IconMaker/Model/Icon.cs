@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Markup;
+using System.Xml.Linq;
 using IconMaker.Annotations;
 
 namespace IconMaker.Model
@@ -14,8 +16,19 @@ namespace IconMaker.Model
             Viewbox = viewbox;
         }
 
+        internal Icon(XElement eltIcon)
+        {
+            Title = eltIcon.Attribute("title")?.Value;
+            LoadIcon(eltIcon);
+        }
+
+        private async void LoadIcon(XElement eltIcon)
+        {
+            Viewbox = await App.DispatchFunc(() => (Viewbox)XamlReader.Load(eltIcon.FirstNode.CreateReader()));
+        }
+
         public string Title { get; }
-        public Viewbox Viewbox { get; }
+        public Viewbox Viewbox { get; private set; }
 
         public int CompareTo(Icon other)
         {

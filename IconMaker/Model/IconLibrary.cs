@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 using IconMaker.Annotations;
 
 namespace IconMaker.Model
@@ -14,9 +15,20 @@ namespace IconMaker.Model
             Name = name;
         }
 
+        internal IconLibrary(XElement eltLibrary)
+        {
+            Name = eltLibrary.Attribute("name")?.Value;
+
+            foreach (XElement eltOverlay in eltLibrary.Elements(MainModel.NSIconMaker + "Overlay"))
+                Overlays.Add(new IconOverlay(eltOverlay));
+
+            foreach (XElement eltCategory in eltLibrary.Elements(MainModel.NSIconMaker + "Category"))
+                Categories.Add(new Category(eltCategory, this));
+        }
+
         public string Name { get; }
-        public ObservableCollection<Category> Categories { get; } = new ObservableCollection<Category>();
         public ObservableCollection<IconOverlay> Overlays { get; } = new ObservableCollection<IconOverlay>();
+        public ObservableCollection<Category> Categories { get; } = new ObservableCollection<Category>();
 
         public int CompareTo(IconLibrary other)
         {

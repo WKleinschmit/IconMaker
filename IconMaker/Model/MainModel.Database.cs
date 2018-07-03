@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Linq;
+using IconMaker.ProgressDialog;
 
 namespace IconMaker.Model
 {
@@ -16,34 +17,82 @@ namespace IconMaker.Model
 
         public XElement LibrariesInDatabase { get; set; }
 
-        private void DoDatabaseUpdate()
+        private void ReadDatabase()
         {
-            LibrariesInDatabase = new XElement(NSIconMaker + "Libraries");
-
-            ProgressDialog.ProgressDialog.Current.Report("Counting icons...");
-
-            int numIcons = CountIcons(App.IconLibPath);
-
-            ProgressDialog.ProgressDialog.Current.Report("Scanning icons...", min: 0, max: numIcons, value: 0);
-
-            ScanIcons(App.IconLibPath);
-
-            foreach (XElement eltLibrary in LibrariesInDatabase.Elements(NSIconMaker + "Library"))
+            string databaseXml = Path.Combine(App.IconLibPath, "database.xml");
+            if (!File.Exists(databaseXml))
             {
-                List<XElement> children = new List<XElement>(eltLibrary.Elements());
-                eltLibrary.RemoveNodes();
-                children.Sort(LibraryChildrenSorter);
-                foreach (XElement child in children)
-                    eltLibrary.Add(child);
+                DoDatabaseUpdate();
+                return;
             }
 
-            string databaseXml = Path.Combine(App.IconLibPath, "database.xml");
+            Libraries.Clear();
 
-            XDocument database = new XDocument(
-                new XDeclaration("1.0", "UTF-8", null),
-                LibrariesInDatabase);
-            using (XmlWriter xmlWriter = XmlWriter.Create(databaseXml, new XmlWriterSettings { Indent = true }))
-                database.WriteTo(xmlWriter);
+            ProgressDialogResult result = ProgressDialog.ProgressDialog.Execute(
+                Owner, "Reading Database", () =>
+                {
+                    XDocument database = XDocument.Load(databaseXml);
+
+                    if (!(database.Root is XElement eltLibraries) || eltLibraries.Name != NSIconMaker + "Libraries")
+                        return;
+
+                    List<IconLibrary> libraries = new List<IconLibrary>();
+                    libraries.AddRange(eltLibraries.Elements(NSIconMaker + "Library").Select(eltLibrary => new IconLibrary(eltLibrary)));
+                    ProgressDialog.ProgressDialog.Current.Arguments.Result = libraries;
+                });
+
+            foreach (IconLibrary iconLibrary in (IEnumerable<IconLibrary>)result.Result)
+                Libraries.Add(iconLibrary);
+        }
+
+        private void DoDatabaseUpdate()
+        {
+            ProgressDialog.ProgressDialog.Execute(
+                Owner, "Updating Database", () =>
+                {
+                    LibrariesInDatabase = new XElement(NSIconMaker + "Libraries");
+
+                    ProgressDialog.ProgressDialog.Current.Report("Counting icons...");
+
+                    int numIcons = CountIcons(App.IconLibPath);
+
+                    ProgressDialog.ProgressDialog.Current.Report("Scanning icons...", min: 0, max: numIcons, value: 0);
+
+                    ScanIcons(App.IconLibPath);
+
+                    ProgressDialog.ProgressDialog.Current.Report("Sorting...");
+
+                    foreach (XElement eltLibrary in LibrariesInDatabase.Elements(NSIconMaker + "Library"))
+                    {
+                        List<XElement> children = new List<XElement>(eltLibrary.Elements());
+                        eltLibrary.RemoveNodes();
+                        children.Sort(LibraryChildrenSorter);
+                        foreach (XElement child in children)
+                        {
+                            eltLibrary.Add(child);
+
+                            if (child.Name.LocalName != "Category")
+                                continue;
+
+                            List<XElement> icons = new List<XElement>(child.Elements());
+                            child.RemoveNodes();
+                            icons.Sort(LibraryChildrenSorter);
+                            foreach (XElement icon in icons)
+                                child.Add(icon);
+                        }
+                    }
+
+                    ProgressDialog.ProgressDialog.Current.Report("Writing database...");
+
+                    string databaseXml = Path.Combine(App.IconLibPath, "database.xml");
+
+                    XDocument database = new XDocument(
+                        new XDeclaration("1.0", "UTF-8", null),
+                        LibrariesInDatabase);
+                    using (XmlWriter xmlWriter = XmlWriter.Create(databaseXml, new XmlWriterSettings { Indent = true }))
+                        database.WriteTo(xmlWriter);
+                });
+            ReadDatabase();
         }
 
         private int LibraryChildrenSorter(XElement x, XElement y)
@@ -51,7 +100,7 @@ namespace IconMaker.Model
             if (x.Name != y.Name)
                 return x.Name.LocalName == "Overlay" ? -1 : 1;
 
-            if (x.Name.LocalName == "Overlay")
+            if (x.Name.LocalName == "Overlay" || x.Name.LocalName == "Icon")
                 return string.Compare(x.Attribute("title")?.Value, y.Attribute("title")?.Value, StringComparison.Ordinal);
 
             return string.Compare(x.Attribute("name")?.Value, y.Attribute("name")?.Value, StringComparison.Ordinal);

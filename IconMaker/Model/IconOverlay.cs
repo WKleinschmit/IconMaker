@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
+using System.Xml.Linq;
 using IconMaker.Annotations;
 using static System.Math;
 
@@ -20,6 +21,28 @@ namespace IconMaker.Model
             Title = title;
         }
 
+        internal IconOverlay(XElement eltOverlay)
+        {
+            Title = eltOverlay.Attribute("title")?.Value;
+
+            LoadOverlays(eltOverlay);
+        }
+
+        private async void LoadOverlays(XElement eltOverlay)
+        {
+            if (eltOverlay.Element(MainModel.NSIconMaker + "TL") is XElement eltTL)
+                TL = await App.DispatchFunc(() => (Viewbox)XamlReader.Load(eltTL.FirstNode.CreateReader()));
+
+            if (eltOverlay.Element(MainModel.NSIconMaker + "TR") is XElement eltTR)
+                TR = await App.DispatchFunc(() => (Viewbox)XamlReader.Load(eltTR.FirstNode.CreateReader()));
+
+            if (eltOverlay.Element(MainModel.NSIconMaker + "BL") is XElement eltBL)
+                BL = await App.DispatchFunc(() => (Viewbox)XamlReader.Load(eltBL.FirstNode.CreateReader()));
+
+            if (eltOverlay.Element(MainModel.NSIconMaker + "BR") is XElement eltBR)
+                BR = await App.DispatchFunc(() => (Viewbox)XamlReader.Load(eltBR.FirstNode.CreateReader()));
+        }
+
         public string Title { get; }
 
         public Viewbox TL { get; internal set; }
@@ -29,7 +52,8 @@ namespace IconMaker.Model
 
         public Viewbox this[OverlayPosition position]
         {
-            get {
+            get
+            {
                 switch (position)
                 {
                     case OverlayPosition.None: return null;

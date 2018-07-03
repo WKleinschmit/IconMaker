@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="urn:IconMaker/Database" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:p="http://schemas.microsoft.com/winfx/2006/xaml/presentation" targetNamespace="urn:IconMaker/Database" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1">
-	<xs:import namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" schemaLocation="file:///D:/Users/WolfgangK/Documents/GitHub/IconMaker/IconMaker/xsd/XAML.xsd"/>
 	<xs:element name="Libraries">
 		<xs:complexType>
 			<xs:sequence>
@@ -13,28 +12,28 @@
 										<xs:element name="TL">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element ref="p:Viewbox"/>
+													<xs:any namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" processContents="lax"/>
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="TR">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element ref="p:Viewbox"/>
+													<xs:any namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" processContents="lax"/>
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="BL">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element ref="p:Viewbox"/>
+													<xs:any namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" processContents="lax"/>
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="BR">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element ref="p:Viewbox"/>
+													<xs:any namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" processContents="lax"/>
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
@@ -48,7 +47,7 @@
 										<xs:element name="Icon" minOccurs="0" maxOccurs="unbounded">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element ref="p:Viewbox"/>
+													<xs:any namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" processContents="lax"/>
 												</xs:sequence>
 												<xs:attribute name="title" type="xs:string" use="required"/>
 											</xs:complexType>

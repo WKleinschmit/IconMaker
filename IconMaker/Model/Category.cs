@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Xml.Linq;
 using IconMaker.Annotations;
 
 namespace IconMaker.Model
@@ -14,6 +15,15 @@ namespace IconMaker.Model
         {
             Name = name;
             Library = library;
+        }
+
+        internal Category(XElement eltCategory, IconLibrary library)
+        {
+            Name = eltCategory.Attribute("name")?.Value;
+            Library = library;
+
+            foreach (XElement eltIcon in eltCategory.Elements(MainModel.NSIconMaker + "Icon"))
+                Icons.Add(new Icon(eltIcon));
         }
 
         public string Name { get; }

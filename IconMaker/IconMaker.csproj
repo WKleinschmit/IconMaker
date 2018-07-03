@@ -176,10 +176,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="xsd\IconMaker.spp" />
     <None Include="xsd\IconMaker.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="xsd\XAML.xsd">
       <SubType>Designer</SubType>
     </None>
     <Resource Include="bin\Debug\Hue.cso" Condition=" '$(Configuration)' == 'Debug' " />

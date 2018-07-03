@@ -9,8 +9,7 @@
         xmlns:colorFilters="clr-namespace:IconMaker.Model.ColorFilters"
         mc:Ignorable="d"
         Title="Icon Maker"
-        Icon="IconMaker.ico"
-        Activated="MainWindow_OnActivated">
+        Icon="IconMaker.ico">
     <Window.Resources>
         <HierarchicalDataTemplate x:Key="{x:Type model:IconLibrary}"
                                   DataType="model:IconLibrary"

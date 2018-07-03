@@ -35,12 +35,7 @@ namespace IconMaker.Model
 
         private void OnRefreshDatabase(object obj)
         {
-            ProgressDialog.ProgressDialog.Execute(
-                Owner, "Updating Database", new Action(DoDatabaseUpdate), new ProgressDialogSettings
-                {
-                    ShowCancelButton = false,
-                    ShowSubLabel = true
-                });
+            DoDatabaseUpdate();
         }
 
         private bool CanRefreshDatabase(object arg)
@@ -52,7 +47,8 @@ namespace IconMaker.Model
 
         private void OnModifyColor(object obj)
         {
-            ModifyColors dlg = new ModifyColors();
+            ModifyColors dlg = new ModifyColors {Owner = Owner};
+            dlg.SetEntries(SelectedColorMapEntries);
             dlg.ShowDialog();
         }
 
