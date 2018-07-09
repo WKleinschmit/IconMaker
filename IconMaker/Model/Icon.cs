@@ -22,7 +22,7 @@ namespace IconMaker.Model
             LoadIcon(eltIcon);
         }
 
-        private async void LoadIcon(XElement eltIcon)
+        private async void LoadIcon(XContainer eltIcon)
         {
             Viewbox = await App.DispatchFunc(() => (Viewbox)XamlReader.Load(eltIcon.FirstNode.CreateReader()));
         }

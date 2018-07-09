@@ -137,13 +137,6 @@
                           x:Name="LibraryTree"
                           BorderThickness="0"
                           SelectedItemChanged="LibraryTree_OnSelectedItemChanged">
-                    <TreeView.ItemContainerStyle>
-                        <Style TargetType="TreeViewItem"
-                               BasedOn="{StaticResource {x:Type TreeViewItem}}">
-                            <Setter Property="IsExpanded"
-                                    Value="True" />
-                        </Style>
-                    </TreeView.ItemContainerStyle>
                 </TreeView>
             </DockPanel>
             <GridSplitter Grid.Column="0"

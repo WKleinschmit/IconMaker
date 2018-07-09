@@ -28,22 +28,24 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <Border Background="Transparent"
-                                BorderThickness="0">
-                            <Border.Clip>
-                                <CombinedGeometry GeometryCombineMode="Exclude">
-                                    <CombinedGeometry.Geometry1>
-                                        <EllipseGeometry x:Name="Geo1" />
-                                    </CombinedGeometry.Geometry1>
-                                    <CombinedGeometry.Geometry2>
-                                        <EllipseGeometry x:Name="Geo2" />
-                                    </CombinedGeometry.Geometry2>
-                                </CombinedGeometry>
-                            </Border.Clip>
-                            <Border.Effect>
-                                <colorFilters:HueRingEffect />
-                            </Border.Effect>
-                        </Border>
+                        <Grid>
+                            <Border Background="Transparent"
+                                    BorderThickness="0">
+                                <Border.Clip>
+                                    <CombinedGeometry GeometryCombineMode="Exclude">
+                                        <CombinedGeometry.Geometry1>
+                                            <EllipseGeometry x:Name="Geo1" />
+                                        </CombinedGeometry.Geometry1>
+                                        <CombinedGeometry.Geometry2>
+                                            <EllipseGeometry x:Name="Geo2" />
+                                        </CombinedGeometry.Geometry2>
+                                    </CombinedGeometry>
+                                </Border.Clip>
+                                <Border.Effect>
+                                    <wpf:HueRingEffect x:Name="HueRingEffect"/>
+                                </Border.Effect>
+                            </Border>
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

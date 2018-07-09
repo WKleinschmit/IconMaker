@@ -23,7 +23,10 @@ namespace IconMaker.Model
             Library = library;
 
             foreach (XElement eltIcon in eltCategory.Elements(MainModel.NSIconMaker + "Icon"))
+            {
                 Icons.Add(new Icon(eltIcon));
+                ProgressDialog.ProgressDialog.Current.Report(value: double.PositiveInfinity);
+            }
         }
 
         public string Name { get; }

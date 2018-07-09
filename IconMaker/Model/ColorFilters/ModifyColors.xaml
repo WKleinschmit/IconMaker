@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="285"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <ScrollViewer Grid.Column="0" Margin="6">
@@ -36,6 +36,21 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </ScrollViewer>
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <wpf:ColorWheel Grid.Column="0"
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
+                                Width="100"
+                                Height="100" />
+            </Grid>
         </Grid>
         <DockPanel Grid.Row="1"
                    LastChildFill="True">

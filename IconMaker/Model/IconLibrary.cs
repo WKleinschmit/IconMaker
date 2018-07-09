@@ -20,7 +20,10 @@ namespace IconMaker.Model
             Name = eltLibrary.Attribute("name")?.Value;
 
             foreach (XElement eltOverlay in eltLibrary.Elements(MainModel.NSIconMaker + "Overlay"))
+            {
                 Overlays.Add(new IconOverlay(eltOverlay));
+                ProgressDialog.ProgressDialog.Current.Report(value: double.PositiveInfinity);
+            }
 
             foreach (XElement eltCategory in eltLibrary.Elements(MainModel.NSIconMaker + "Category"))
                 Categories.Add(new Category(eltCategory, this));

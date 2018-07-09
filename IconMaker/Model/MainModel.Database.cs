@@ -31,14 +31,23 @@ namespace IconMaker.Model
             ProgressDialogResult result = ProgressDialog.ProgressDialog.Execute(
                 Owner, "Reading Database", () =>
                 {
+                    ProgressDialog.ProgressDialog.Current.Report("Reading ...");
                     XDocument database = XDocument.Load(databaseXml);
 
                     if (!(database.Root is XElement eltLibraries) || eltLibraries.Name != NSIconMaker + "Libraries")
                         return;
 
+                    int n = database
+                        .Descendants()
+                        .Count(d => d.Name.LocalName == "Overlay" || d.Name.LocalName == "Icon");
+
+                    ProgressDialog.ProgressDialog.Current.Report(min: 0, max: n, value: 0);
+
                     List<IconLibrary> libraries = new List<IconLibrary>();
                     libraries.AddRange(eltLibraries.Elements(NSIconMaker + "Library").Select(eltLibrary => new IconLibrary(eltLibrary)));
                     ProgressDialog.ProgressDialog.Current.Arguments.Result = libraries;
+
+                    App.WaitForIdle();
                 });
 
             foreach (IconLibrary iconLibrary in (IEnumerable<IconLibrary>)result.Result)
@@ -91,6 +100,8 @@ namespace IconMaker.Model
                         LibrariesInDatabase);
                     using (XmlWriter xmlWriter = XmlWriter.Create(databaseXml, new XmlWriterSettings { Indent = true }))
                         database.WriteTo(xmlWriter);
+
+                    App.WaitForIdle();
                 });
             ReadDatabase();
         }
